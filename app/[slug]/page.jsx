@@ -1,4 +1,5 @@
-
+"use server"
+import RecenetListed from "@/components/index/RecenetListed";
 import pool from "../libs/mysql";
 import EmblaCarousel from "@/components/slider/EmblaCarousel";
 import {
@@ -10,6 +11,11 @@ import {
     //IconX,
     IconEye,
   } from "@tabler/icons-react";
+import MoreDetails from "@/components/moreDetails/MoreDetails";
+import SinglePropertyDetails from "@/components/singlePropertyDetails/SinglePropertyDetails";
+import Disclaimer from "@/components/disclaimer/Disclaimer";
+import PopSlider from "@/components/popSlider/PopSlider";
+import Map3 from "@/components/googleMap/GoogleMap";
 
 export async function generateMetadata({ params }, parent) {
   const { slug } = params;
@@ -48,52 +54,46 @@ const getData = async (slug, proId) => {
    const [images] = await db.query(q1, proId);
    const updatedImages = [...images, { img_link: "default.webp" }]
 
-   console.log(rows[0] , updatedImages);
-    return { row: rows[0], images: updatedImages };
+   const q2 = `SELECT DISTINCT property_module_images.img_cnct_id , property_module.* , property_module_images.img_link FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id where pro_listed = 1 group by pro_id ORDER BY pro_id DESC LIMIT 6`
+   const [latestProperty] = await db.query(q2);
+
+   console.log("latestProperty : " , latestProperty);
+    return { row: rows[0], images: updatedImages, latestProperty : latestProperty };
   } catch (err) {
     console.log("err : " , err);
     return err;
   }
 };
 
-const getData2 = async (proId) => {
-    try {
-    const db = await pool;
-     const q1 = "SELECT * from property_module_images WHERE img_cnct_id = ?";
-     const [images] = await db.query(q1, proId);
-     const updatedImages = [...images, { img_link: "default.webp" }]
-      return { images: updatedImages };
-    } catch (err) {
-      return err;
-    }
-  };
+
 
 const PropertyDetail = async ({ params }) => {
   const { slug } = params;
   if (!slug) {
     return <div>Invalid Property ID</div>;
   }
-
   console.log("slug : " , slug);
   const arrproId = slug.split("-");
-
   const proId1 = arrproId[arrproId.length - 1];
-
+  
   try {
-    //const response = await axios.get(`https://localhost:8010/api/pro/fetchPropertyDataById/${slug}`);
-    
-    //const propertyData = response.propertyData;
-    //console.log(response.propertyData)
-    //const propertyData = await getData(slug);
-    //const images = await getData2(proId1);
-
-    const { row : propertyData, images } = await getData(slug, proId1);
+    const { row : propertyData, images, latestProperty: latestProperty } = await getData(slug, proId1);
     console.log(images, propertyData);
-    //const { pro_url, pro_id } = propertyData;
 
     return (
       <>
-       
+          {/* <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+      >
+      
+        <PopSlider
+          slides={images}
+          handleClose={handleClose}
+          currentImage={currentImage}
+        />
+      </Modal> */}
        <div className="container">
         <div className="row">
           <div className="col-md-12">
@@ -211,7 +211,7 @@ const PropertyDetail = async ({ params }) => {
                       <div className="row">
                         <div className="col-md-6">
                           <div className="leftblock">
-                          <div className="photosection">
+                          {/* <div className="photosection">
                               {images?.length > 1 ? (
                                 <EmblaCarousel
                                   pro_area_size={propertyData.pro_area_size}
@@ -224,7 +224,7 @@ const PropertyDetail = async ({ params }) => {
                                   //handleCurrentImage={handleCurrentImage}
                                   totalViews={propertyData.pro_views}
                                 />
-                              ) : (
+                              ) : ( */}
                                 <div>
                                   <img
                                     src="/images/default.webp"
@@ -277,241 +277,12 @@ const PropertyDetail = async ({ params }) => {
                                       )}
                                   </div>
                                 </div>
-                              )}
-                            </div>
+                               {/* )}
+                            </div> */}
                           </div>
                         </div>
                         <div className="col-md-6">
-                          <div className={"property-side-detail"}>
-                            <div style={{ fontSize: "10px" }}>
-                              Property ID
-                              <span className="propertypage-id">
-                                {5000}
-                              </span>
-                            </div>
-                            <div className="property-no-detail">
-                              <div className={"property-small-detail"}>
-                                {propertyData.pro_type ? (
-                                  propertyData.pro_type.split(",")[1] == "Commercial" ||
-                                  propertyData.pro_type.split(",")[1] ==
-                                    "Residential" ? (
-                                    <>
-                                      <div className="property-numbers">
-                                        <img src="/img/bedroom.webp" height="15px" width="15px" loading="lazy"  alt="" />
-                                        <span className="propertyHeading">
-                                          Bedroom(s)
-                                        </span>
-                                        <span className="propertyData">
-                                          {propertyData.pro_bedroom}
-                                        </span>
-                                      </div>
-                                      <div className="property-numbers">
-                                        <img src="/img/shower.webp"  height="15px" width="15px" loading="lazy" alt="" />
-                                        <span className="propertyHeading">
-                                          Washroom(s)
-                                        </span>
-                                        <span className="propertyData">
-                                          {propertyData.pro_washrooms}
-                                        </span>
-                                      </div>
-                                      <div className="property-numbers">
-                                        <img src="/img/balcony.webp"  height="15px" width="15px" loading="lazy" alt="" />
-                                        <span className="propertyHeading">
-                                          Balconies
-                                        </span>
-                                        <span className="propertyData">
-                                          {propertyData.pro_balcony}
-                                        </span>
-                                      </div>
-                                      <div className="property-numbers">
-                                        <img src="/img/tiles.webp"  height="15px" width="15px" loading="lazy" alt="" />
-                                        <span className="propertyHeading">
-                                          Floor(s)
-                                        </span>
-                                        <span className="propertyData">
-                                          {propertyData.pro_floor}
-                                        </span>
-                                      </div>
-                                    </>
-                                  ) : (
-                                    ""
-                                  )
-                                ) : (
-                                  ""
-                                )}
-
-                                <div className="property-numbers">
-                                  <img src="/img/transfer.webp"  height="15px" width="15px" loading="lazy" alt="" />
-                                  <span className="propertyHeading">
-                                    Side Open(s)
-                                  </span>
-                                  <span className="propertyData">
-                                    {(propertyData.pro_open_sides)}
-                                  </span>
-                                </div>
-                                <div className="property-numbers">
-                                  <img src="/img/face-detection.webp"  height="15px" width="15px" loading="lazy" alt="" />
-                                  <span className="propertyHeading">
-                                    Facing
-                                  </span>
-                                  <span className="propertyData">
-                                    {(propertyData.pro_facing)}
-                                  </span>
-                                </div>
-                                <div className="property-numbers">
-                                  <img src="/img/ownership.webp"  height="15px" width="15px" loading="lazy" alt="" />
-                                  <span className="propertyHeading">
-                                    Possession Available
-                                  </span>
-                                  <span className="propertyData">
-                                    {(propertyData.pro_possession)}
-                                  </span>
-                                </div>
-                                {propertyData.pro_type == "Commercial" ||
-                                propertyData.pro_type == "Residential" ? (
-                                  <div className="property-numbers">
-                                    <img src="/img/parking.webp" height="15px" width="15px" loading="lazy" alt="" />
-                                    <span className="propertyHeading">
-                                      Car Parking(s)
-                                    </span>
-                                    <span className="propertyData">
-                                      {(propertyData.pro_parking)}
-                                    </span>
-                                  </div>
-                                ) : (
-                                  <div className="property-numbers">
-                                    <img src="/img/age.webp" height="15px" width="15px" loading="lazy" alt="" />
-                                    <span className="propertyHeading">
-                                      Property Age
-                                    </span>
-                                    <span className="propertyData">
-                                      {(propertyData.pro_age)}
-                                    </span>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                            <div className=" mmmm">
-                              <div className="large-detials">
-                                <img
-                                  src="/img/meter.webp"
-                                  alt=""
-                                  className="desc"
-                                  height="15px" width="15px"
-                                  loading="lazy"
-                                />
-                                <span className="propertyHeading">
-                                  Plot Size &amp; Dimension
-                                </span>
-                                <p>
-                                  <span className="propertyData">
-                                    <span className="measure">
-                                      {propertyData.pro_width
-                                        ? propertyData.pro_width +
-                                          " Feet * " +
-                                          propertyData.pro_length +
-                                          " Feet"
-                                        : "-"}
-                                    </span>
-                                  </span>
-                                </p>
-                              </div>
-                              <div className="large-detials">
-                                <img
-                                  src="/img/rent.webp"
-                                  alt=""
-                                  className="desc"
-                                   height="15px" width="15px" loading="lazy"
-                                />
-                                <span className="propertyHeading">
-                                  Already Rent
-                                </span>
-                                <p>
-                                  <span className="propertyData">
-                                    {(propertyData.pro_rental_status)}
-                                  </span>
-                                </p>
-                              </div>
-                            </div>
-                            <div className=" mmmm" id="interest">
-                              <div className="large-detials">
-                                <img
-                                  src="/img/ownership-type.webp"
-                                  alt=""
-                                  className="desc"
-                                   height="15px" width="15px" loading="lazy"
-                                />
-                                <span className="propertyHeading">
-                                  Type Of Ownership
-                                </span>
-                                <p>
-                                  <span className="propertyData">
-                                    {(propertyData.pro_ownership_type)}
-                                  </span>
-                                </p>
-                              </div>
-                              <div className="large-detials">
-                                <img
-                                  src="/img/rent.webp"
-                                  alt=""
-                                  className="desc"
-                                   height="15px" width="15px" loading="lazy"
-                                />
-                                <span className="propertyHeading">
-                                  Authority Approval
-                                </span>
-                                <p>
-                                  <span className="propertyData">
-                                    {(propertyData.pro_approval)}
-                                  </span>
-                                </p>
-                              </div>
-                            </div>
-                            {propertyData.pro_type ? (
-                              propertyData.pro_type.split(",")[1] == "Commercial" ||
-                              propertyData.pro_type.split(",")[1] == "Residential" ? (
-                                <>
-                                  <div className=" mmmm">
-                                    <div className="large-detials">
-                                      <img
-                                        src="/img/age.webp"
-                                        alt=""
-                                        className="desc"
-                                         height="15px" width="15px" loading="lazy"
-                                      />
-                                      <span className="propertyHeading">
-                                        Property Age
-                                      </span>
-                                      <p>
-                                        <span className="propertyData">
-                                          {(propertyData.pro_age)}
-                                        </span>
-                                      </p>
-                                    </div>
-                                    <div className="large-detials">
-                                      <img
-                                        src="/img/furnishing.webp"
-                                        alt=""
-                                        className="desc"
-                                         height="15px" width="15px" loading="lazy"
-                                      />
-                                      <span className="propertyHeading">
-                                        Furnishing
-                                      </span>
-                                      <p>
-                                        <span className="propertyData">
-                                          {(propertyData.pro_furnishing)}
-                                        </span>
-                                      </p>
-                                    </div>
-                                  </div>
-                                </>
-                              ) : null
-                            ) : (
-                              ""
-                            )}
-                            <div></div>
-                          </div>
+                          <SinglePropertyDetails propertyData={propertyData} />
                         </div>
                       </div>
 
@@ -526,101 +297,19 @@ const PropertyDetail = async ({ params }) => {
                 <div className="row">
                   <div className="col-md-12">
                     {propertyData !== undefined && propertyData.pro_listed !== 0 && (
+                      <MoreDetails propertyData={propertyData} />
+                    )}
+                 
+                 {propertyData !== undefined && propertyData.pro_listed !== 0 && (
                       <div className="property-more-detail">
                         <div className="row">
                           <div className="col-md-12">
-                            <div className="details">
-                              <div className="row">
-                                <div className="col-md-12">
-                                  <div className="more-detail-heading">
-                                    More Details
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="row moreDetail">
-                                <div className="col-md-3 more-detail-right">
-                                  Price
-                                </div>
-                                <div className="col-md-9 more-detail-left">
-                                  
-Ask Price
-                                </div>
-                              </div>
-                              <div className="row moreDetail">
-                                <div className="col-md-3 more-detail-right">
-                                  Address
-                                </div>
-                                <div className="col-md-9 more-detail-left">
-                                  {propertyData.pro_locality},&nbsp;
-                                  {propertyData.pro_sub_district
-                                    ? propertyData.pro_sub_district + ", "
-                                    : ""}
-                                  {propertyData.pro_city},&nbsp;
-                                  {propertyData.pro_state}
-                                </div>
-                              </div>
-                              <div className="row moreDetail">
-                                <div className="col-md-3 more-detail-right">
-                                  Facing Road Width
-                                </div>
-                                <div className="col-md-9 more-detail-left">
-                                  {propertyData.pro_facing_road_width
-                                    ? propertyData.pro_facing_road_width +
-                                      " " +
-                                      propertyData.pro_facing_road_unit
-                                    : "-"}
-                                </div>
-                              </div>
 
-                              <div className="row moreDetail">
-                                <span className="col-md-3 more-detail-right">
-                                  Description &nbsp;
-                                </span>
-                                <span className="col-md-9 more-detail-left ">
-                                  {propertyData.pro_desc}
-                                </span>
-                              </div>
-
-                              {propertyData.pro_other_rooms && (
-                                <div className="row moreDetail">
-                                  <span className="col-md-3 more-detail-right">
-                                    Other Rooms &nbsp;
-                                  </span>
-                                  <span className="col-md-9 more-detail-left ">
-                                    {cleanString(propertyData.pro_other_rooms)}
-                                  </span>
-                                </div>
-                              )}
-                              {propertyData.pro_near_by_facilities && (
-                                <div className="row moreDetail">
-                                  <span className="col-md-3 more-detail-right">
-                                    Near By Facilities &nbsp;
-                                  </span>
-                                  <span className="col-md-9 more-detail-left ">
-                                    {cleanString(propertyData.pro_near_by_facilities)}
-                                  </span>
-                                </div>
-                              )}
-                              {propertyData.pro_corner === 'Yes' && (
-                                <div className="row moreDetail">
-                                  <span className="col-md-3 more-detail-right">
-                                    Corner Property &nbsp;
-                                  </span>
-                                  <span className="col-md-9 more-detail-left ">
-                                    {cleanString(propertyData.pro_corner)}
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
+                 <Map3 data={propertyData} />
+                 </div>
                         </div>
                       </div>
                     )}
-                 
-                    
-
-                    
-
 
                     {propertyData !== undefined && propertyData.pro_listed !== 0 && (
                       <div className="property-more-detail">
@@ -666,44 +355,10 @@ Ask Price
                       </div>
                     )}
                    
+                   <RecenetListed data={latestProperty} />
                   
                    
-                    <div className="property-more-detail">
-                      <div className="row">
-                        <div className="col-md-12">
-                          <div className="details">
-                            <div className="row">
-                              <div className="col-md-12">
-                                <div className="more-detail-heading">
-                                  Disclaimer
-                                </div>
-
-                                <p>
-                                  All images/information provided in this
-                                  listing given by its owner, brokers or
-                                  builders may be actual or used
-                                  for illustrative purposes only and may not
-                                  represent real individuals, places, or events.
-                                   In real, images/information about this
-                                  property may vary. Kindly verify the physical
-                                  possession of the property and its owners and
-                                  property documents and cross-check everything
-                                  before any transaction. The company is not
-                                  responsible for discrepancies found at any
-                                  stage. Any resemblance to actual persons or
-                                  copyrighted materials is purely coincidental.
-                                  Unauthorized use or reproduction of these
-                                  images/information is prohibited. If you
-                                  believe any image/information violates your
-                                  rights, don't hesitate to get in touch with us
-                                  for prompt resolution.
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <Disclaimer />
                   </div>
                 </div>
               </section>
@@ -723,3 +378,4 @@ Ask Price
 };
 
 export default PropertyDetail;
+
