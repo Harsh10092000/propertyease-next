@@ -53,7 +53,7 @@ const EmblaCarousel = (props) => {
                 height="304px"
                 className=" coursor-pointer bg-img"
                 src={
-                  import.meta.env.VITE_BACKEND +
+                  process.env.webURL+
                   "/propertyImages/watermark/" +
                   item.img_link
                 }
@@ -78,7 +78,7 @@ const EmblaCarousel = (props) => {
                 title="Click to Enlarge Image"
                 className="embla__slide__img coursor-pointer"
                 src={
-                  import.meta.env.VITE_BACKEND +
+                  process.env.webURL+
                   "/propertyImages/watermark/" +
                   item.img_link
                 }
@@ -129,7 +129,7 @@ const EmblaCarousel = (props) => {
                 selected={index === selectedIndex}
                 index={index}
                 imgSrc={
-                  import.meta.env.VITE_BACKEND +
+                  process.env.webURL+
                   "/propertyImages/watermark/" +
                   items.img_link
                 }

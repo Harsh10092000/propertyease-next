@@ -1,3 +1,4 @@
+
 import pool from "../libs/mysql";
 import EmblaCarousel from "@/components/slider/EmblaCarousel";
 import {
@@ -9,7 +10,7 @@ import {
     //IconX,
     IconEye,
   } from "@tabler/icons-react";
-  
+
 export async function generateMetadata({ params }, parent) {
   const { slug } = params;
   if (!slug) {
@@ -34,20 +35,21 @@ export async function generateMetadata({ params }, parent) {
 }
 
 
-const getData = async (slug) => {
+const getData = async (slug, proId) => {
   try {
     
     const db = await pool;
     const q =
       "SELECT * from property_module where pro_id = ?";
-    const [rows] = await db.query(q, slug);
+    const [rows] = await db.query(q, proId);
 
-    console.log("slug inside fuc : " , slug);
-   //const q1 = "SELECT * from property_module_images WHERE img_cnct_id = ?";
-  // const [images] = await db.query(q1, proId);
-   //const updatedImages = [...images, { img_link: "default.webp" }]
+  
+   const q1 = "SELECT * from property_module_images WHERE img_cnct_id = ?";
+   const [images] = await db.query(q1, proId);
+   const updatedImages = [...images, { img_link: "default.webp" }]
 
-    return { row: rows[0] };
+   console.log(rows[0] , updatedImages);
+    return { row: rows[0], images: updatedImages };
   } catch (err) {
     console.log("err : " , err);
     return err;
@@ -80,12 +82,14 @@ const PropertyDetail = async ({ params }) => {
   try {
     //const response = await axios.get(`https://localhost:8010/api/pro/fetchPropertyDataById/${slug}`);
     
-    //const propertyData = response.propertyData.row;
-    //console.log(response.propertyData.row)
-    const propertyData = await getData(slug);
-    const images = await getData2(proId1);
-    console.log(propertyData.row);
-    //const { pro_url, pro_id } = propertyData.row;
+    //const propertyData = response.propertyData;
+    //console.log(response.propertyData)
+    //const propertyData = await getData(slug);
+    //const images = await getData2(proId1);
+
+    const { row : propertyData, images } = await getData(slug, proId1);
+    console.log(images, propertyData);
+    //const { pro_url, pro_id } = propertyData;
 
     return (
       <>
@@ -97,7 +101,7 @@ const PropertyDetail = async ({ params }) => {
 
             <div>
               <section className="property-view-outer">
-                {propertyData.row.pro_listed !== 0 ? (
+                {propertyData.pro_listed !== 0 ? (
                   <ul className="coming-field-content">
                     <li>
                       {/* <Link
@@ -114,21 +118,21 @@ const PropertyDetail = async ({ params }) => {
                     {/* <li>
                       <Link
                         title={`Click to view ${
-                          propertyData.row.pro_type ? propertyData.row.pro_type.split(",")[1] : ""
+                          propertyData.pro_type ? propertyData.pro_type.split(",")[1] : ""
                         } Properties`}
                         to={`/listing/${
-                          propertyData.row.pro_type ? propertyData.row.pro_type.split(",")[1] : ""
+                          propertyData.pro_type ? propertyData.pro_type.split(",")[1] : ""
                         }`}
                       >
                         
-                        {propertyData.row.pro_type ? propertyData.row.pro_type.split(",")[1] : ""}
+                        {propertyData.pro_type ? propertyData.pro_type.split(",")[1] : ""}
                         
                        
                       </Link>
                     </li> */}
-                    <li>{propertyData.row.pro_sub_cat}</li>
+                    <li>{propertyData.pro_sub_cat}</li>
                   </ul>
-                ) : propertyData.row.pro_sale_status === 1 ? (
+                ) : propertyData.pro_sale_status === 1 ? (
                   <div class="no-longer-available">
                     <h1>This property has been sold.</h1>
                     <p>Check out our other listings.</p>
@@ -139,7 +143,7 @@ const PropertyDetail = async ({ params }) => {
                     <p>We apologize for any inconvenience this may cause.</p>
                   </div>
                 )}
-                {propertyData.row !== undefined && propertyData.row.pro_listed !== 0 && (
+                {propertyData !== undefined && propertyData.pro_listed !== 0 && (
                   <div className="property-view-inner">
                     <div className="row">
                       <div
@@ -178,12 +182,12 @@ const PropertyDetail = async ({ params }) => {
                        
                           <div className="d-md-flex">
                             <div className=" pl-3 pl-md-0 pb-0 text-capitalize pro-add">
-                              {propertyData.row.pro_locality},&nbsp;
-                              {propertyData.row.pro_sub_district
-                                ? propertyData.row.pro_sub_district + ", "
+                              {propertyData.pro_locality},&nbsp;
+                              {propertyData.pro_sub_district
+                                ? propertyData.pro_sub_district + ", "
                                 : ""}
-                              {propertyData.row.pro_city},&nbsp;
-                              {propertyData.row.pro_state}
+                              {propertyData.pro_city},&nbsp;
+                              {propertyData.pro_state}
                             </div>
                             <span className="right-border mx-2 mobile-hidden"></span>
                           
@@ -210,15 +214,15 @@ const PropertyDetail = async ({ params }) => {
                           <div className="photosection">
                               {images?.length > 1 ? (
                                 <EmblaCarousel
-                                  pro_area_size={propertyData.row.pro_area_size}
-                                  pro_area_size_unit={propertyData.row.pro_area_size_unit}
-                                  pro_type={propertyData.row.pro_type}
-                                  pro_ad_type={propertyData.row.pro_ad_type}
-                                  pro_city={propertyData.row.pro_city}
+                                  pro_area_size={propertyData.pro_area_size}
+                                  pro_area_size_unit={propertyData.pro_area_size_unit}
+                                  pro_type={propertyData.pro_type}
+                                  pro_ad_type={propertyData.pro_ad_type}
+                                  pro_city={propertyData.pro_city}
                                   slides={images}
                                   open={() => setOpen(true)}
-                                  handleCurrentImage={handleCurrentImage}
-                                  totalViews={propertyData.row.pro_views}
+                                  //handleCurrentImage={handleCurrentImage}
+                                  totalViews={propertyData.pro_views}
                                 />
                               ) : (
                                 <div>
@@ -229,13 +233,13 @@ const PropertyDetail = async ({ params }) => {
                                       width="489px"
                                       height="410px"
                                     alt={`Property For ${
-                                      propertyData.row.pro_ad_type === "Rent"
+                                      propertyData.pro_ad_type === "Rent"
                                         ? "Rent"
                                         : "Sale"
                                     } in ${
-                                      propertyData.row.pro_city
-                                        ? propertyData.row.pro_city + ", " + propertyData.row.pro_state
-                                        : propertyData.row.pro_state
+                                      propertyData.pro_city
+                                        ? propertyData.pro_city + ", " + propertyData.pro_state
+                                        : propertyData.pro_state
                                     }`}
                                     //alt="No Image"
                                     // alt={
@@ -262,12 +266,12 @@ const PropertyDetail = async ({ params }) => {
                                     This property has been sold out.
                                   </marquee> */}
                                   <div className="top-left-2">
-                                    {propertyData.row.pro_views !== null &&
-                                      parseInt(propertyData.row.pro_views) > 0 && (
+                                    {propertyData.pro_views !== null &&
+                                      parseInt(propertyData.pro_views) > 0 && (
                                         <ul>
                                         <li className="property-view-count ">
                                           <IconEye width={16} height={16} />
-                                          Views {propertyData.row.pro_views}
+                                          Views {propertyData.pro_views}
                                         </li>
                                         </ul>
                                       )}
@@ -287,9 +291,9 @@ const PropertyDetail = async ({ params }) => {
                             </div>
                             <div className="property-no-detail">
                               <div className={"property-small-detail"}>
-                                {propertyData.row.pro_type ? (
-                                  propertyData.row.pro_type.split(",")[1] == "Commercial" ||
-                                  propertyData.row.pro_type.split(",")[1] ==
+                                {propertyData.pro_type ? (
+                                  propertyData.pro_type.split(",")[1] == "Commercial" ||
+                                  propertyData.pro_type.split(",")[1] ==
                                     "Residential" ? (
                                     <>
                                       <div className="property-numbers">
@@ -298,7 +302,7 @@ const PropertyDetail = async ({ params }) => {
                                           Bedroom(s)
                                         </span>
                                         <span className="propertyData">
-                                          {propertyData.row.pro_bedroom}
+                                          {propertyData.pro_bedroom}
                                         </span>
                                       </div>
                                       <div className="property-numbers">
@@ -307,7 +311,7 @@ const PropertyDetail = async ({ params }) => {
                                           Washroom(s)
                                         </span>
                                         <span className="propertyData">
-                                          {propertyData.row.pro_washrooms}
+                                          {propertyData.pro_washrooms}
                                         </span>
                                       </div>
                                       <div className="property-numbers">
@@ -316,7 +320,7 @@ const PropertyDetail = async ({ params }) => {
                                           Balconies
                                         </span>
                                         <span className="propertyData">
-                                          {propertyData.row.pro_balcony}
+                                          {propertyData.pro_balcony}
                                         </span>
                                       </div>
                                       <div className="property-numbers">
@@ -325,7 +329,7 @@ const PropertyDetail = async ({ params }) => {
                                           Floor(s)
                                         </span>
                                         <span className="propertyData">
-                                          {propertyData.row.pro_floor}
+                                          {propertyData.pro_floor}
                                         </span>
                                       </div>
                                     </>
@@ -342,7 +346,7 @@ const PropertyDetail = async ({ params }) => {
                                     Side Open(s)
                                   </span>
                                   <span className="propertyData">
-                                    {(propertyData.row.pro_open_sides)}
+                                    {(propertyData.pro_open_sides)}
                                   </span>
                                 </div>
                                 <div className="property-numbers">
@@ -351,7 +355,7 @@ const PropertyDetail = async ({ params }) => {
                                     Facing
                                   </span>
                                   <span className="propertyData">
-                                    {(propertyData.row.pro_facing)}
+                                    {(propertyData.pro_facing)}
                                   </span>
                                 </div>
                                 <div className="property-numbers">
@@ -360,18 +364,18 @@ const PropertyDetail = async ({ params }) => {
                                     Possession Available
                                   </span>
                                   <span className="propertyData">
-                                    {(propertyData.row.pro_possession)}
+                                    {(propertyData.pro_possession)}
                                   </span>
                                 </div>
-                                {propertyData.row.pro_type == "Commercial" ||
-                                propertyData.row.pro_type == "Residential" ? (
+                                {propertyData.pro_type == "Commercial" ||
+                                propertyData.pro_type == "Residential" ? (
                                   <div className="property-numbers">
                                     <img src="/img/parking.webp" height="15px" width="15px" loading="lazy" alt="" />
                                     <span className="propertyHeading">
                                       Car Parking(s)
                                     </span>
                                     <span className="propertyData">
-                                      {(propertyData.row.pro_parking)}
+                                      {(propertyData.pro_parking)}
                                     </span>
                                   </div>
                                 ) : (
@@ -381,7 +385,7 @@ const PropertyDetail = async ({ params }) => {
                                       Property Age
                                     </span>
                                     <span className="propertyData">
-                                      {(propertyData.row.pro_age)}
+                                      {(propertyData.pro_age)}
                                     </span>
                                   </div>
                                 )}
@@ -402,10 +406,10 @@ const PropertyDetail = async ({ params }) => {
                                 <p>
                                   <span className="propertyData">
                                     <span className="measure">
-                                      {propertyData.row.pro_width
-                                        ? propertyData.row.pro_width +
+                                      {propertyData.pro_width
+                                        ? propertyData.pro_width +
                                           " Feet * " +
-                                          propertyData.row.pro_length +
+                                          propertyData.pro_length +
                                           " Feet"
                                         : "-"}
                                     </span>
@@ -424,7 +428,7 @@ const PropertyDetail = async ({ params }) => {
                                 </span>
                                 <p>
                                   <span className="propertyData">
-                                    {(propertyData.row.pro_rental_status)}
+                                    {(propertyData.pro_rental_status)}
                                   </span>
                                 </p>
                               </div>
@@ -442,7 +446,7 @@ const PropertyDetail = async ({ params }) => {
                                 </span>
                                 <p>
                                   <span className="propertyData">
-                                    {(propertyData.row.pro_ownership_type)}
+                                    {(propertyData.pro_ownership_type)}
                                   </span>
                                 </p>
                               </div>
@@ -458,14 +462,14 @@ const PropertyDetail = async ({ params }) => {
                                 </span>
                                 <p>
                                   <span className="propertyData">
-                                    {(propertyData.row.pro_approval)}
+                                    {(propertyData.pro_approval)}
                                   </span>
                                 </p>
                               </div>
                             </div>
-                            {propertyData.row.pro_type ? (
-                              propertyData.row.pro_type.split(",")[1] == "Commercial" ||
-                              propertyData.row.pro_type.split(",")[1] == "Residential" ? (
+                            {propertyData.pro_type ? (
+                              propertyData.pro_type.split(",")[1] == "Commercial" ||
+                              propertyData.pro_type.split(",")[1] == "Residential" ? (
                                 <>
                                   <div className=" mmmm">
                                     <div className="large-detials">
@@ -480,7 +484,7 @@ const PropertyDetail = async ({ params }) => {
                                       </span>
                                       <p>
                                         <span className="propertyData">
-                                          {(propertyData.row.pro_age)}
+                                          {(propertyData.pro_age)}
                                         </span>
                                       </p>
                                     </div>
@@ -496,7 +500,7 @@ const PropertyDetail = async ({ params }) => {
                                       </span>
                                       <p>
                                         <span className="propertyData">
-                                          {(propertyData.row.pro_furnishing)}
+                                          {(propertyData.pro_furnishing)}
                                         </span>
                                       </p>
                                     </div>
@@ -521,7 +525,7 @@ const PropertyDetail = async ({ params }) => {
 
                 <div className="row">
                   <div className="col-md-12">
-                    {propertyData.row !== undefined && propertyData.row.pro_listed !== 0 && (
+                    {propertyData !== undefined && propertyData.pro_listed !== 0 && (
                       <div className="property-more-detail">
                         <div className="row">
                           <div className="col-md-12">
@@ -547,12 +551,12 @@ Ask Price
                                   Address
                                 </div>
                                 <div className="col-md-9 more-detail-left">
-                                  {propertyData.row.pro_locality},&nbsp;
-                                  {propertyData.row.pro_sub_district
-                                    ? propertyData.row.pro_sub_district + ", "
+                                  {propertyData.pro_locality},&nbsp;
+                                  {propertyData.pro_sub_district
+                                    ? propertyData.pro_sub_district + ", "
                                     : ""}
-                                  {propertyData.row.pro_city},&nbsp;
-                                  {propertyData.row.pro_state}
+                                  {propertyData.pro_city},&nbsp;
+                                  {propertyData.pro_state}
                                 </div>
                               </div>
                               <div className="row moreDetail">
@@ -560,10 +564,10 @@ Ask Price
                                   Facing Road Width
                                 </div>
                                 <div className="col-md-9 more-detail-left">
-                                  {propertyData.row.pro_facing_road_width
-                                    ? propertyData.row.pro_facing_road_width +
+                                  {propertyData.pro_facing_road_width
+                                    ? propertyData.pro_facing_road_width +
                                       " " +
-                                      propertyData.row.pro_facing_road_unit
+                                      propertyData.pro_facing_road_unit
                                     : "-"}
                                 </div>
                               </div>
@@ -573,37 +577,37 @@ Ask Price
                                   Description &nbsp;
                                 </span>
                                 <span className="col-md-9 more-detail-left ">
-                                  {propertyData.row.pro_desc}
+                                  {propertyData.pro_desc}
                                 </span>
                               </div>
 
-                              {propertyData.row.pro_other_rooms && (
+                              {propertyData.pro_other_rooms && (
                                 <div className="row moreDetail">
                                   <span className="col-md-3 more-detail-right">
                                     Other Rooms &nbsp;
                                   </span>
                                   <span className="col-md-9 more-detail-left ">
-                                    {cleanString(propertyData.row.pro_other_rooms)}
+                                    {cleanString(propertyData.pro_other_rooms)}
                                   </span>
                                 </div>
                               )}
-                              {propertyData.row.pro_near_by_facilities && (
+                              {propertyData.pro_near_by_facilities && (
                                 <div className="row moreDetail">
                                   <span className="col-md-3 more-detail-right">
                                     Near By Facilities &nbsp;
                                   </span>
                                   <span className="col-md-9 more-detail-left ">
-                                    {cleanString(propertyData.row.pro_near_by_facilities)}
+                                    {cleanString(propertyData.pro_near_by_facilities)}
                                   </span>
                                 </div>
                               )}
-                              {propertyData.row.pro_corner === 'Yes' && (
+                              {propertyData.pro_corner === 'Yes' && (
                                 <div className="row moreDetail">
                                   <span className="col-md-3 more-detail-right">
                                     Corner Property &nbsp;
                                   </span>
                                   <span className="col-md-9 more-detail-left ">
-                                    {cleanString(propertyData.row.pro_corner)}
+                                    {cleanString(propertyData.pro_corner)}
                                   </span>
                                 </div>
                               )}
@@ -618,27 +622,27 @@ Ask Price
                     
 
 
-                    {propertyData.row !== undefined && propertyData.row.pro_listed !== 0 && (
+                    {propertyData !== undefined && propertyData.pro_listed !== 0 && (
                       <div className="property-more-detail">
                         <div className="row">
                           <div className="col-md-12">
                             <div className="details">
                               <div className="row">
-                                {propertyData.row.pro_type && (
+                                {propertyData.pro_type && (
                                   <div className="col-md-12">
                                     <div className="more-detail-heading">
                                       More About this Property
                                     </div>
 
-                                    {/* {propertyData.row.pro_type.split(",")[1] ===
+                                    {/* {propertyData.pro_type.split(",")[1] ===
                                   "Residential" ? (
                                     <p>
                                       Its neighborhood is great for a dream
                                       home. Located near the{" "}
-                                      {propertyData.row.pro_sub_district
-                                        ? propertyData.row.pro_sub_district + ", "
+                                      {propertyData.pro_sub_district
+                                        ? propertyData.pro_sub_district + ", "
                                         : ""}
-                                      {propertyData.row.pro_city}. A lovely backyard was
+                                      {propertyData.pro_city}. A lovely backyard was
                                       recently renovated, with a patio ideal for
                                       entertaining guests. Good schools, parks,
                                       and shops are nearby. Whether you are
@@ -713,8 +717,8 @@ Ask Price
       </>
     );
   } catch (error) {
-    console.error("Error fetching property propertyData.row:", error);
-    return <div>Error loading property propertyData.row</div>;
+    console.error("Error fetching property propertyData:", error);
+    return <div>Error loading property propertyData</div>;
   }
 };
 
