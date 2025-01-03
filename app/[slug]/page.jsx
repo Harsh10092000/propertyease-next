@@ -55,7 +55,9 @@ const getData = async (slug, proId) => {
    const [images] = await db.query(q1, proId);
    const updatedImages = [...images, { img_link: "default.webp" }]
 
-   const q2 = `SELECT DISTINCT property_module_images.img_cnct_id , property_module.* , property_module_images.img_link FROM property_module left join property_module_images on property_module.pro_id = property_module_images.img_cnct_id where pro_listed = 1 group by pro_id ORDER BY pro_id DESC LIMIT 6`
+   const q2 = `SELECT DISTINCT property_module_images.* , property_module.* , agent_data.agent_type as user_type, agent_data.agent_name , agent_data.agent_sub_district, agent_data.agent_city, agent_data.agent_state FROM property_module left join property_module_images on 
+    property_module.pro_id = property_module_images.img_cnct_id left join (SELECT agent_type,user_cnct_id,agent_name ,agent_sub_district, agent_city, agent_state FROM agent_module) as agent_data on 
+    property_module.pro_user_id = agent_data.user_cnct_id where pro_listed = 1 group by pro_id ORDER BY pro_id DESC`
    const [latestProperty] = await db.query(q2);
 
    console.log("latestProperty : " , latestProperty);
