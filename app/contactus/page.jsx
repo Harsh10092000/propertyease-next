@@ -30,7 +30,7 @@ const ContactUs = () => {
     setLoader(true);
     try {
       await axios.post(
-        process.env.webURL + "/api/contact/contactUsData",
+        import.meta.env.VITE_BACKEND + "/api/contact/contactUsData",
         data
       );
       setLoader(false);
@@ -361,7 +361,7 @@ export default ContactUs;
 //     setLoader(true);
 //     try {
 //       await axios.post(
-//         process.env.webURL + "/api/contact/contactUsData",
+//         import.meta.env.VITE_BACKEND + "/api/contact/contactUsData",
 //         data
 //       );
 //       setLoader(false);

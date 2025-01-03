@@ -60,7 +60,7 @@ const getData = async (slug, proId) => {
     property_module.pro_user_id = agent_data.user_cnct_id where pro_listed = 1 group by pro_id ORDER BY pro_id DESC`
    const [latestProperty] = await db.query(q2);
 
-   console.log("latestProperty : " , latestProperty);
+   //console.log("latestProperty : " , latestProperty);
     return { row: rows[0], images: updatedImages, latestProperty : latestProperty };
   } catch (err) {
     console.log("err : " , err);
@@ -84,7 +84,7 @@ const PropertyDetail = async ({ params }) => {
   
   try {
     const { row : propertyData, images, latestProperty: latestProperty } = await getData(slug, proId1);
-    console.log(images, propertyData);
+   // console.log(images, propertyData);
 
     return (
       <>

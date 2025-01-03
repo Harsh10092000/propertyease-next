@@ -3,12 +3,11 @@ import React from "react";
 import { useState } from "react";
 import Link from "next/link";
 import { IconEye, IconBrandWhatsapp, IconSend } from "@tabler/icons-react";
-//import ContactUsForm from "../contactUsForm/ContactUsForm";
-
-//import { Snackbar } from "@mui/material";
+import ContactUsForm from "../contactUsForm/ContactUsForm";
+import { Snackbar } from "@mui/material";
 import moment from "moment";
 import { ShowPrice } from "../HelperComponents";
-//import { ShowPrice } from "../HelperComponents";
+
 
 const PropertyCard = ({ object, index, currentUser }) => {
 
@@ -38,7 +37,7 @@ const formatString = (str) => str.toLowerCase().replace(/ /g, '-');
 
   return (
     <div className="list-group">
-      {/* <Snackbar
+      <Snackbar
           ContentProps={{
             sx: {
               background: "green",
@@ -50,8 +49,8 @@ const formatString = (str) => str.toLowerCase().replace(/ /g, '-');
           autoHideDuration={2000}
           onClose={() => handleSnackDialog(false)}
           message="Thank you for showing your interest in this property. Our team will get back to you soon."
-        /> */}
-      {/* {openContactDialog ? (
+        />
+      {openContactDialog ? (
         <ContactUsForm
           openContactDialog={openContactDialog}
           handleCloseDialog={handleCloseDialog}
@@ -66,8 +65,8 @@ const formatString = (str) => str.toLowerCase().replace(/ /g, '-');
         />
       ) : (
         ""
-      )} */}
-      {/* <Snackbar
+      )}
+      <Snackbar
           ContentProps={{
             sx: {
               background: "green",
@@ -79,7 +78,7 @@ const formatString = (str) => str.toLowerCase().replace(/ /g, '-');
           autoHideDuration={4000}
           onClose={() => handleSnackDialog(false)}
           message="We Will Contact you soon !.."
-        /> */}
+        />
       <div className="row">
         <div className="col-md-auto flex-column text-center">
           <div className="buiness-logo">
@@ -191,7 +190,7 @@ const formatString = (str) => str.toLowerCase().replace(/ /g, '-');
                   &nbsp;{object.pro_facing}
                 </li>
               </ul>
-              <Link
+              {/* <Link
               title="View More" className="btn-viewmore"
                               href={`/property/${object.pro_type
                                 .split(",")[0]
@@ -202,10 +201,10 @@ const formatString = (str) => str.toLowerCase().replace(/ /g, '-');
                                 object.pro_id
                               }`}
                             >
-                              {/* <a title="View More" className="btn-viewmore"> */}
+                              
                                 View More
-                              {/* </a> */}
-                            </Link>
+                             
+                            </Link> */}
             </div>
             <div className="pt-3 d-flex justify-content-between align-items-center listing-details-wrapper">
               <div className=" listed pl-md-0 listing-details">
