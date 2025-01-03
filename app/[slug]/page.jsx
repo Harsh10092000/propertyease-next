@@ -1,21 +1,22 @@
 "use server"
 import RecenetListed from "@/components/index/RecenetListed";
 import pool from "../libs/mysql";
-import EmblaCarousel from "@/components/slider/EmblaCarousel";
+
 import {
-    IconSend,
-    //IconShare3,
-    IconStarFilled,
-    IconBrandWhatsapp,
-    IconBrandFacebook,
-    //IconX,
     IconEye,
+    IconChevronRight,
   } from "@tabler/icons-react";
 import MoreDetails from "@/components/moreDetails/MoreDetails";
 import SinglePropertyDetails from "@/components/singlePropertyDetails/SinglePropertyDetails";
 import Disclaimer from "@/components/disclaimer/Disclaimer";
-import PopSlider from "@/components/popSlider/PopSlider";
+
 import Map3 from "@/components/googleMap/GoogleMap";
+
+import EmblaCarouselWrapper from "@/components/singlePropertyDetails/EmblaCarouselWrapper";
+import Link from "next/link";
+import { ShowPrice } from "@/components/HelperComponents";
+import DynmaicDesc from "@/components/singlePropertyDetails/DynmaicDesc";
+import StickyHeader from "@/components/singlePropertyDetails/StickyHeader";
 
 export async function generateMetadata({ params }, parent) {
   const { slug } = params;
@@ -68,6 +69,7 @@ const getData = async (slug, proId) => {
 
 
 const PropertyDetail = async ({ params }) => {
+  const currentUser  = "";
   const { slug } = params;
   if (!slug) {
     return <div>Invalid Property ID</div>;
@@ -75,6 +77,8 @@ const PropertyDetail = async ({ params }) => {
   console.log("slug : " , slug);
   const arrproId = slug.split("-");
   const proId1 = arrproId[arrproId.length - 1];
+
+
   
   try {
     const { row : propertyData, images, latestProperty: latestProperty } = await getData(slug, proId1);
@@ -82,18 +86,8 @@ const PropertyDetail = async ({ params }) => {
 
     return (
       <>
-          {/* <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-      >
-      
-        <PopSlider
-          slides={images}
-          handleClose={handleClose}
-          currentImage={currentImage}
-        />
-      </Modal> */}
+        
+      <div>
        <div className="container">
         <div className="row">
           <div className="col-md-12">
@@ -104,23 +98,24 @@ const PropertyDetail = async ({ params }) => {
                 {propertyData.pro_listed !== 0 ? (
                   <ul className="coming-field-content">
                     <li>
-                      {/* <Link
+                       <Link
                         title="Click to View All Properties"
-                        to="/allproperties"
-                      > */}
+                        href="/allproperties"
+                      > 
                         All Properties
-                      {/* </Link> */}
+                        <span>
+                          <IconChevronRight className="sidebar-faicon" />
+                        </span>
+                       </Link> 
 
-                      <div>
-                      All Properties
-                      </div>
+                      
                     </li>
-                    {/* <li>
+                    <li>
                       <Link
                         title={`Click to view ${
                           propertyData.pro_type ? propertyData.pro_type.split(",")[1] : ""
                         } Properties`}
-                        to={`/listing/${
+                        href={`/listing/${
                           propertyData.pro_type ? propertyData.pro_type.split(",")[1] : ""
                         }`}
                       >
@@ -129,7 +124,7 @@ const PropertyDetail = async ({ params }) => {
                         
                        
                       </Link>
-                    </li> */}
+                    </li>
                     <li>{propertyData.pro_sub_cat}</li>
                   </ul>
                 ) : propertyData.pro_sale_status === 1 ? (
@@ -146,85 +141,15 @@ const PropertyDetail = async ({ params }) => {
                 {propertyData !== undefined && propertyData.pro_listed !== 0 && (
                   <div className="property-view-inner">
                     <div className="row">
-                      <div
-                        className={"top newClass pt-3" }
-                        id="dynamic"
-                      >
-                        <div
-                          className="d-flex flex-column pt-2 pt-md-0 pl-3 pl-md-0 pr-3 pr-md-0"
-                          style={{ gap: "0", width: "100%" }}
-                        >
-                          
-                            <h1 className="capitalize pl-md-0 d-flex pt-4 pt-md-0 align-items-center flex-wrap property-heading">
-                              {arrproId
-                                .slice(0, arrproId.length - 1)
-                                .map((item) => (
-                                  <span className="pro-slug-space">
-                                    {item[0].toUpperCase() + item.slice(1)}
-                                  </span>
-                                ))}
-                              {/* <span>
-                                Residential Plot
-                                </span> */}
-                              {/* {arrproId[0] +" "+arrproId[1] +" "+arrproId[2] +" "+arrproId[3] +" "+arrproId[4]+" "+arrproId[5]+" "+arrproId[6]+" "+arrproId[7]+" "+arrproId[8]} */}
-                              
-                                <button
-                                  className="shortlist"
-                                  title="Shortlist this property"
-                                  //onClick={shortlistProperty}
-                                >
-                                  
-                                </button>
-                             
-                            </h1>
-                          
-                        </div>
-                       
-                          <div className="d-md-flex">
-                            <div className=" pl-3 pl-md-0 pb-0 text-capitalize pro-add">
-                              {propertyData.pro_locality},&nbsp;
-                              {propertyData.pro_sub_district
-                                ? propertyData.pro_sub_district + ", "
-                                : ""}
-                              {propertyData.pro_city},&nbsp;
-                              {propertyData.pro_state}
-                            </div>
-                            <span className="right-border mx-2 mobile-hidden"></span>
-                          
-                          </div>
-                      
-                       
-                        <div className="d-md-flex align-items-center justify-content-between p-1">
-                         
-                            <div className="d-flex align-items-center justify-content-between pl-md-0 ">
-                              <div className="property-price">
-                               
-                                
-                                  Ask Price
-                              </div>
-                            </div>
-                         
-
-                         
-                        </div>
-                      </div>
+                     <StickyHeader propertyData={propertyData} arrproId={arrproId} slug={slug} />
                       <div className="row">
                         <div className="col-md-6">
                           <div className="leftblock">
-                          {/* <div className="photosection">
+                          <div className="photosection">
                               {images?.length > 1 ? (
-                                <EmblaCarousel
-                                  pro_area_size={propertyData.pro_area_size}
-                                  pro_area_size_unit={propertyData.pro_area_size_unit}
-                                  pro_type={propertyData.pro_type}
-                                  pro_ad_type={propertyData.pro_ad_type}
-                                  pro_city={propertyData.pro_city}
-                                  slides={images}
-                                  open={() => setOpen(true)}
-                                  //handleCurrentImage={handleCurrentImage}
-                                  totalViews={propertyData.pro_views}
-                                />
-                              ) : ( */}
+                               
+                                <EmblaCarouselWrapper propertyData={propertyData} images={images} />
+                              ) : (
                                 <div>
                                   <img
                                     src="/images/default.webp"
@@ -277,8 +202,8 @@ const PropertyDetail = async ({ params }) => {
                                       )}
                                   </div>
                                 </div>
-                               {/* )}
-                            </div> */}
+                               )}
+                            </div> 
                           </div>
                         </div>
                         <div className="col-md-6">
@@ -312,47 +237,7 @@ const PropertyDetail = async ({ params }) => {
                     )}
 
                     {propertyData !== undefined && propertyData.pro_listed !== 0 && (
-                      <div className="property-more-detail">
-                        <div className="row">
-                          <div className="col-md-12">
-                            <div className="details">
-                              <div className="row">
-                                {propertyData.pro_type && (
-                                  <div className="col-md-12">
-                                    <div className="more-detail-heading">
-                                      More About this Property
-                                    </div>
-
-                                    {/* {propertyData.pro_type.split(",")[1] ===
-                                  "Residential" ? (
-                                    <p>
-                                      Its neighborhood is great for a dream
-                                      home. Located near the{" "}
-                                      {propertyData.pro_sub_district
-                                        ? propertyData.pro_sub_district + ", "
-                                        : ""}
-                                      {propertyData.pro_city}. A lovely backyard was
-                                      recently renovated, with a patio ideal for
-                                      entertaining guests. Good schools, parks,
-                                      and shops are nearby. Whether you are
-                                      moving in tomorrow or today, this house is
-                                      ready to be occupied.
-                                    </p>
-                                  ) 
-                            
-                                  : (
-                                    ""
-                                  
-                                  )} */}
-
-
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      <DynmaicDesc data={propertyData} />
                     )}
                    
                    <RecenetListed data={latestProperty} />
@@ -367,6 +252,7 @@ const PropertyDetail = async ({ params }) => {
             
           </div>
         </div>
+      </div>
       </div>
 
       </>

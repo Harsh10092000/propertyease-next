@@ -91,7 +91,7 @@ const PopSlider = (props) => {
               <img
                 className="embla__slide__imgpop"
                 src={
-                  import.meta.env.VITE_BACKEND +
+                  process.env.webURL +
                   "/propertyImages/watermark/" +
                   item.img_link
                 }

@@ -53,6 +53,7 @@ const AllProperties = async () => {
                 {records?.length > 0 &&
                   records.map((object, index) => (
                     <PropertyCard
+                    key={index}
                       // viewerRef= {viewerRef}
                       object={object}
                       index={index}

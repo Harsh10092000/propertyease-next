@@ -57,7 +57,7 @@
 
 //     try {
 //       await axios.post(
-//         import.meta.env.VITE_BACKEND + "/api/contact/freeEnquiry",
+//         process.env.webURL + "/api/contact/freeEnquiry",
 //         data
 //       );
 //       setLoader(false);
@@ -464,7 +464,7 @@ const Footer = () => {
 
     try {
       await axios.post(
-        import.meta.env.VITE_BACKEND + "/api/contact/freeEnquiry",
+        process.env.webURL + "/api/contact/freeEnquiry",
         data
       );
       setLoader(false);
@@ -559,7 +559,7 @@ const Footer = () => {
     setLoader1(true);
     try {
       await axios.post(
-        import.meta.env.VITE_BACKEND + "/api/maildigest/addSubscriberData",
+        process.env.webURL + "/api/maildigest/addSubscriberData",
         popupData
       );
       setLoader1(false);
