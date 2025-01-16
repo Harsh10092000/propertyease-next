@@ -3,8 +3,10 @@ import React from 'react'
 import Link from 'next/link'
 import { useEffect, useState, useRef } from "react";
 //import { useRouter } from 'next/router';
+import { useRouter } from "next/navigation";
 
 const HeroSection = ({propertyTypeOptions, directSearchButtons, propertyAdTypeOptions, proData}) => {
+  const router = useRouter();
     const [suggestions, setSuggestions] = useState();
     const [openSuggestions, setOpenSuggestions] = useState(false);
     //const router = useRouter();
@@ -133,17 +135,19 @@ const HeroSection = ({propertyTypeOptions, directSearchButtons, propertyAdTypeOp
         
           const placeholder = placeholderText[state % placeholderText.length];
 
-        //   const handleClick = (index) => {
-        //     navigate(
-        //       `/allproperties?search=${searchValue}&proadtype=${propertyAdTypeFilter}&procat=${propertyTypeFilter}`
-        //     );
-        //   };
+          // const handleClick = (index) => {
+          //   navigate(
+          //     `/allproperties?search=${searchValue}&proadtype=${propertyAdTypeFilter}&procat=${propertyTypeFilter}`
+          //   );
+          // };
 
-        //   const handleClick = () => {
-        //     const url = `/allproperties?search=${searchValue}&proadtype=${propertyAdTypeFilter}&procat=${propertyTypeFilter}`;
-        //     router.push(url);
-        //   };
-        const handleClick = () => {}
+          const handleClick = () => {
+            const url = `/allproperties?search=${searchValue}&proadtype=${propertyAdTypeFilter}&procat=${propertyTypeFilter}`;
+            router.push(url);
+          };
+        // const handleClick = () => {
+
+        // }
   return (
     <div className="image-cover hero-banner" data-select2-id="13">
           <div className="container" data-select2-id="12">
@@ -274,8 +278,9 @@ const HeroSection = ({propertyTypeOptions, directSearchButtons, propertyAdTypeOp
                   />
                   {openSuggestions && (
                     <div className=" search-suggestions-2 pt-2 shadow pb-2">
-                      {suggestions.map((item) => (
+                      {suggestions.map((item, index) => (
                         <div
+                        key={index}
                           className="py-2 pl-2 suggesion-item-2 pointer"
                           onClick={() => {
                             setSearchValue(item), setOpenSuggestions(false);
