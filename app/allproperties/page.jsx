@@ -45,7 +45,7 @@ const data = res.row;
   const firstIndex = (currentPage - 1) * recordsPerPage;
   const lastIndex = currentPage * recordsPerPage;
   //const records = res.row.slice(firstIndex, lastIndex); 
-  onst records = res.row;
+  const records = res.row;
   //const records1 = records.slice(0, 2)
     console.log("record : " , records);
     //const currentPageNo = 1;
