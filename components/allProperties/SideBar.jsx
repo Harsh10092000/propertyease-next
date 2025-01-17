@@ -6,8 +6,7 @@ import { useState, useEffect } from 'react';
 const SideBar = () => {
     const [propertyAdTypeFilter, setPropertyAdTypeFilter] =
     useState("All Properties");
-  const [openPropertyAdTypeOptions, setOpenPropertyAdTypeOptions] =
-    useState(false);
+  
   const propertyAdTypeOptions = [
     { type: "All Properties" },
     { type: "Sale" },
@@ -55,8 +54,8 @@ const SideBar = () => {
   const [proWithPhotos, setProWithPhotos] = useState(false);
   const [proWithParking, setProWithParking] = useState(false);
 
-  const [sortBy, setSortBy] = useState("Recent Listed");
-  const [openSortByOptions, setOpenSortByOptions] = useState(false);
+  
+
 
   const [selectedSubTypeFilter, setSelectedSubTypeFilter] = useState([]);
   
@@ -146,101 +145,12 @@ const SideBar = () => {
     }
   };
 
-  useEffect(() => {
-    const unique1 = Array.from(
-      new Set(data?.slice(0, 60).map((item) => item.pro_city.trim()))
-    );
-    const uniqueState = Array.from(
-      new Set(data?.slice(0, 60).map((item) => item.pro_state.trim()))
-    );
 
-    const unique2 = Array.from(
-      new Set(
-        data
-          ?.slice(0, 60)
-          .map(
-            (item) =>
-              (item.pro_sub_district
-                ? item.pro_sub_district.trim() + ", "
-                : "") + item.pro_city.trim()
-          )
-      )
-    );
-    const unique3 = Array.from(
-      new Set(
-        data
-          ?.slice(0, 60)
-          .map(
-            (item) =>
-              (item.pro_locality ? item.pro_locality.trim() + ", " : "") +
-              (item.pro_sub_district
-                ? item.pro_sub_district.trim() + ", "
-                : "") +
-              item.pro_city.trim()
-          )
-      )
-    );
 
-    const arr = [
-      ...unique1,
-      ...uniqueState,
-      ...unique2,
-      ...unique3,
-      searchValue,
-    ];
-
-    const unique4 = Array.from(
-      new Set(arr.slice(0, 200).map((item) => item.trim()))
-    );
-    const unique = unique4.filter((i) =>
-      i.toLowerCase().startsWith(searchValue.toLowerCase())
-    );
-
-    if (searchValue === "") {
-      setOpenSuggestions(false);
-    }
-
-    setSuggestions(unique);
-  }, [searchValue]);
-
-  const [sortedUsers, setSortedUsers] = useState([]);
-
-  useEffect(() => {
-    setSortedUsers(data);
-    if (sortBy === "Recent Listed") {
-      sortedUsers.sort((a, b) => b.pro_id - a.pro_id);
-    } else if (sortBy === "Most Popular") {
-      sortedUsers.sort((a, b) => b.pro_views - a.pro_views);
-    }
-  }, [data, sortBy]);
+ 
   //let sortedUsers = [...data];
 
-  const handleSearch = () => {
-    setOpenSuggestions(false);
-    let searchWords = searchValue?.toLowerCase().split(",");
-    setSearchValue1(searchValue);
-
-    const filteredData = (results.length > 0 ? results : sortedUsers).filter(
-      (item) => {
-        const itemValues =
-          item.pro_locality +
-          " " +
-          item.pro_city +
-          " " +
-          item.pro_sub_district +
-          " " +
-          item.pro_street +
-          " " +
-          item.pro_state;
-
-        return searchWords.every((word) =>
-          itemValues.toLowerCase().includes(word)
-        );
-      }
-    );
-
-    setResults(filteredData);
-  };
+  
 
   useEffect(() => {
     let searchWords = searchValue1?.toLowerCase().split(",");

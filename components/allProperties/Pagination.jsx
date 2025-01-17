@@ -28,10 +28,20 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { Pagination } from "@mui/material";
+import Head from "next/head";
 
 const PaginationComp = (props) => {
   const router = useRouter();
+
+  const prevPage = props.currentPage > 1 ? `/allproperties?page=${props.currentPage - 1}` : null;
+  const nextPage = props.currentPage < props.Pages ? `/allproperties?page=${props.currentPage + 1}` : null;
+
   return (
+    <>
+    <Head>
+        {prevPage && <link rel="prev" href={prevPage} />}
+        {nextPage && <link rel="next" href={nextPage} />}
+      </Head>
     <Pagination
       count={parseInt(props.Pages)}
       size="large"
@@ -41,6 +51,7 @@ const PaginationComp = (props) => {
       page={parseInt(props.currentPage)}
       onChange={(e, value) => router.push(`/allproperties?page=${value}`)}
     />
+    </>
   );
 };
 
