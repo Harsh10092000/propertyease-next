@@ -103,7 +103,13 @@ const data = res.row;
                   </div>
               
             </div>
+            {currentPage > 1 &&
+            <a href={`/allproperties?page=${parseInt(currentPage) - 1}`}>Prev</a>
+}
             <PaginationComp Pages={nPages} currentPage={currentPage} />
+            {currentPage < 16 &&
+            <a href={`/allproperties?page=${parseInt(currentPage) + 1}`}>Next</a>
+}
           </div>
         </section>
       </div>
