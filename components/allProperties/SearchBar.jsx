@@ -2,7 +2,11 @@
 import React from 'react'
 import { useState,useEffect  } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useRouter } from "next/navigation";
+
+
 const SearchBar = ({ data }) => {
+  const router = useRouter();
   const [openSortByOptions, setOpenSortByOptions] = useState(false);
   const [sortBy, setSortBy] = useState("Recent Listed");
   const [searchParams, setSearchParams] = useSearchParams();
@@ -126,6 +130,7 @@ const SearchBar = ({ data }) => {
                         onClick={() => {
                           setSortBy("Recent Listed"),
                             setOpenSortByOptions(false);
+                            router.push(`/allproperties?page=Recent Listed`)
                         }}
                       >
                         Recent Listed
@@ -137,6 +142,8 @@ const SearchBar = ({ data }) => {
                         onClick={() => {
                           setSortBy("Most Popular"),
                             setOpenSortByOptions(false);
+                            router.push(`/allproperties?page=Most Popular`)
+
                         }}
                       >
                         Most Popular

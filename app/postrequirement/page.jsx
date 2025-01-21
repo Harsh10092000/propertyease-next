@@ -86,7 +86,7 @@ const PostRequirement = () => {
     try {
       await axios
         .post(
-          process.env.webURL + `/api/postRequirement/postRequirement`,
+          import.meta.env.VITE_BACKEND + `/api/postRequirement/postRequirement`,
           userData
         )
         .then((res) => {

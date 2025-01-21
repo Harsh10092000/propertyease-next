@@ -1,62 +1,44 @@
-import React from "react";
-import PropertyCard from "@/components/propertyCard/PropertyCard";
-import pool from "../libs/mysql";
-import PaginationComp from "@/components/allProperties/Pagination";
-import Providers from "../progressBarprovider";
-import SideBar from "@/components/allProperties/SideBar";
-import Sidebar2 from "@/components/allProperties/Sidebar2";
-import SearchBar from "@/components/allProperties/SearchBar";
+"use client"
+import React from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import PropertyCard from '@/components/propertyCard/PropertyCard'
+import Providers from '../progressBarprovider'
+import SearchBar from '@/components/allProperties/SearchBar'
+import PaginationComp from '@/components/allProperties/Pagination'
 
-const getData = async () => {
-    try {
-      
-      const db = await pool;
-      const q =
-        `SELECT DISTINCT property_module_images.* , property_module.* , agent_data.agent_type as user_type, agent_data.agent_name , agent_data.agent_sub_district, agent_data.agent_city, agent_data.agent_state FROM property_module left join property_module_images on 
-    property_module.pro_id = property_module_images.img_cnct_id left join (SELECT agent_type,user_cnct_id,agent_name ,agent_sub_district, agent_city, agent_state FROM agent_module) as agent_data on 
-    property_module.pro_user_id = agent_data.user_cnct_id where pro_listed = 1 group by pro_id ORDER BY pro_id DESC`;
-      const q1 = "SELECT COUNT(*) as total from property_module where pro_listed = 1";
-      const [rows] = await db.query(q);
-      const [total] = await db.query(q1);
+const page = ( {searchParams} ) => {
+    const [data , setData] = useState([]);
+    //const [nPages , setNPages] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    useEffect(() => {
+        axios
+          .get(process.env.webURL + "/api/pro/fetchPropertyData")
+          .then((res) => {
+            setData(res.data);
+          });
+        }, []);
 
-      return { row: rows, total: total };
-    } catch (err) {
-      
-      return err;
-    }
-  };
+        const currentUser = "";
+        //const result = await getData();
+        //const records = result.row;
+    
+    
+        //const currentPage = searchParams["page"] || 1;
 
-const AllProperties = async ({ searchParams }) => {
-  
-  
-    const currentUser = "";
-    //const result = await getData();
-    //const records = result.row;
+      //const recordsPerPage = 12;
 
+    //   useEffect(() => {
+    //     setNPages( Math.ceil(data.length/ recordsPerPage));
+    //     setCurrentPage( searchParams["page"] || 1);
+    //   }, [data])
 
-    const currentPage = searchParams["page"] || 1;
-  const res = await getData(currentPage);
-  // console.log(res);
-  const recordsPerPage = 12;
-  const nPages = Math.ceil(res.total[0].total / recordsPerPage);
-
-const data = res.row;
-
-  const firstIndex = (currentPage - 1) * recordsPerPage;
-  const lastIndex = currentPage * recordsPerPage;
-  const records = res.row.slice(firstIndex, lastIndex); 
-
-  //const records1 = records.slice(0, 2)
-    console.log("record : " , records);
-    //const currentPageNo = 1;
-  //   const currentPage = 1;
-  //   const recordsPerPage = 10;
-  // const lastIndex = currentPage * recordsPerPage;
-  // let firstIndex = lastIndex - recordsPerPage;
-
-  // const records = records1?.slice(firstIndex, lastIndex);
-  // const nPages = Math.ceil(records1?.length / recordsPerPage);
-
+     
+      const recordsPerPage = 10;
+      const lastIndex = currentPage * recordsPerPage;
+      let firstIndex = lastIndex - recordsPerPage;
+      const records = data?.slice(firstIndex, lastIndex);
+      const nPages = Math.ceil(data?.length / recordsPerPage);
   return (
     <Providers>
     <div>
@@ -81,7 +63,7 @@ const data = res.row;
                 <span className="ml-2 numberProperties">{records.length}</span>
               </h2>
             </div>
-<SearchBar data={data}/>
+<SearchBar data={records}/>
             <div className="row">
               <div className="col-md-9">
                 {records?.length > 0 &&
@@ -115,7 +97,7 @@ const data = res.row;
       </div>
     </div>
     </Providers>
-  );
-};
+  )
+}
 
-export default AllProperties;
+export default page
