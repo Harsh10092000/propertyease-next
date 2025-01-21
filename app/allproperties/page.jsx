@@ -1,5 +1,4 @@
 "use client"
-import { useSearchParams } from 'next/navigation'
 import React from 'react'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
@@ -8,8 +7,7 @@ import Providers from '../progressBarprovider'
 import SearchBar from '@/components/allProperties/SearchBar'
 import PaginationComp from '@/components/allProperties/Pagination'
 
-const page = () => {
-  const searchParams = useSearchParams();
+const page = ( {searchParams} ) => {
     const [data , setData] = useState([]);
     const [openSortByOptions, setOpenSortByOptions] = useState(false);
       const [sortBy, setSortBy] = useState("Recent Listed");
