@@ -8,6 +8,7 @@ import Providers from '../progressBarprovider'
 import SearchBar from '@/components/allProperties/SearchBar'
 import PaginationComp from '@/components/allProperties/Pagination'
 
+
 const page = () => {
   const searchParams = useParams();
     const [data , setData] = useState([]);
@@ -32,9 +33,13 @@ const page = () => {
             setResults(res.data);
           });
         }, []);
+        
 
     useEffect(() => {
-      setCurrentPage(searchParams["page"] || 1);
+      // setCurrentPage(searchParams["page"] || 1);
+      const {page} = useParams();
+      //setCurrentPage(searchParams.get("page") || 1);
+      setCurrentPage(page || 1)
     }, [searchParams]);    
 
         const currentUser = "";
