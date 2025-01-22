@@ -27,20 +27,6 @@ const getData = async () => {
     }
   };
 
-  export const generateStaticParams = async () => {
-    const res = await getData(1);  // Initial query for total count
-    const totalProperties = res.total[0].total;
-    const recordsPerPage = 12;
-    const nPages = Math.ceil(totalProperties / recordsPerPage);
-  
-    // Generate paginated paths (for each page)
-    const paths = [];
-    for (let page = 1; page <= nPages; page++) {
-      paths.push({ page: page.toString() });
-    }
-  
-    return paths;
-  };
 
 const AllProperties = async ({ searchParams }) => {
   
@@ -102,6 +88,12 @@ const AllProperties = async ({ searchParams }) => {
         content={`Top real estate agents near me, Commercial real estate, Residential real estate, haryana, rent house, Property, Propertyease, houses for rent, mls,real estate agent, property for sale,  for sale near me, home, realtor, houses for sale Sale, Rent, Buy, India, Best Property `}
       />
 
+<div style={{display: "none"}}>
+    {data.map((item,index) => (
+        <a key={index} href={`/${item.pro_url}`} >{item.pro_url}</a>
+    ))}
+    
+</div>
       <div className={"main"}>
         <section className="main-content">
           <div className="container">
