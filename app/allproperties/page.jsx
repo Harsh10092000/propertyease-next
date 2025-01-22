@@ -27,6 +27,21 @@ const getData = async () => {
     }
   };
 
+  export const generateStaticParams = async () => {
+    const res = await getData(1);  // Initial query for total count
+    const totalProperties = res.total[0].total;
+    const recordsPerPage = 12;
+    const nPages = Math.ceil(totalProperties / recordsPerPage);
+  
+    // Generate paginated paths (for each page)
+    const paths = [];
+    for (let page = 1; page <= nPages; page++) {
+      paths.push({ page: page.toString() });
+    }
+  
+    return paths;
+  };
+
 const AllProperties = async ({ searchParams }) => {
   
   
@@ -69,6 +84,8 @@ const AllProperties = async ({ searchParams }) => {
   const firstIndex = (currentPage - 1) * recordsPerPage;
   const lastIndex = currentPage * recordsPerPage;
   const records = res.row.slice(firstIndex, lastIndex); 
+
+
 
   return (
     <Providers>
