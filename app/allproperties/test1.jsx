@@ -7,20 +7,20 @@ import PropertyCard from '@/components/propertyCard/PropertyCard'
 import Providers from '../progressBarprovider'
 import SearchBar from '@/components/allProperties/SearchBar'
 import PaginationComp from '@/components/allProperties/Pagination'
-import { useSearchParams } from 'next/navigation'
+//import { useSearchParams } from 'next/navigation'
 
 
 import React, { Suspense } from "react";
 
 
 
-const Page1 = () => {
+export const Page1 = ({data, currentUser, recordsPerPage, currentPage}) => {
 
-  const searchParams = useSearchParams();
-  const a = searchParams.get("page");
-  console.log("a : " , a);
+  // const searchParams = useSearchParams();
+  // const a = searchParams.get("page");
+  // console.log("a : " , a);
   
-    const [data , setData] = useState([]);
+    //const [data , setData] = useState([]);
     const [openSortByOptions, setOpenSortByOptions] = useState(false);
       const [sortBy, setSortBy] = useState("Recent Listed");
       //const [searchParams, setSearchParams] = useSearchParams();
@@ -32,31 +32,35 @@ const Page1 = () => {
       const [openSuggestions, setOpenSuggestions] = useState(false);
       const [sortedUsers, setSortedUsers] = useState([]);
     //const [nPages , setNPages] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
+    //const [currentPage, setCurrentPage] = useState(1);
     const [results, setResults] = useState("");
-    useEffect(() => {
-        axios
-          .get(process.env.webURL + "/api/pro/fetchPropertyData")
-          .then((res) => {
-            setData(res.data);
-            setResults(res.data);
-          });
-        }, []);
-        
 
     useEffect(() => {
+        setResults(data);
+      }, [])
+    // useEffect(() => {
+    //     axios
+    //       .get(process.env.webURL + "/api/pro/fetchPropertyData")
+    //       .then((res) => {
+    //         setData(res.data);
+    //         setResults(res.data);
+    //       });
+    //     }, []);
+        
+
+    //useEffect(() => {
       // setCurrentPage(searchParams["page"] || 1);
      // const {page} = useParams();
 
-     const {page} = searchParams;
-     console.log("page : " , page);
+    //  const {page} = searchParams;
+    //  console.log("page : " , page);
       //setCurrentPage(searchParams.get("page") || 1);
       
-      const ab = searchParams.get("page");
-      setCurrentPage(ab || 1)
-    }, [searchParams]);    
+    //   const ab = searchParams.get("page");
+    //   setCurrentPage(ab || 1)
+    // }, [searchParams]);    
 
-        const currentUser = "";
+        //const currentUser = "";
         //const result = await getData();
         //const records = result.row;
     
@@ -71,7 +75,7 @@ const Page1 = () => {
     //   }, [data])
 
      
-      const recordsPerPage = 12;
+      //const recordsPerPage = 12;
       const lastIndex = currentPage * recordsPerPage;
       let firstIndex = lastIndex - recordsPerPage;
       const records = results?.slice(firstIndex, lastIndex);
@@ -113,7 +117,7 @@ const Page1 = () => {
             );
         
             setResults(filteredData);
-            setCurrentPage(1);
+            //setCurrentPage(1);
           };
       
             useEffect(() => {
@@ -175,7 +179,7 @@ const Page1 = () => {
 
   return (
     <Providers>
-    <div>
+    {/* <div>
       <title>Propertyease - View All Properties</title>
       <meta
         name="description"
@@ -186,7 +190,7 @@ const Page1 = () => {
       <meta
         name="keywords"
         content={`Top real estate agents near me, Commercial real estate, Residential real estate, haryana, rent house, Property, Propertyease, houses for rent, mls,real estate agent, property for sale,  for sale near me, home, realtor, houses for sale Sale, Rent, Buy, India, Best Property `}
-      />
+      /> */}
 
       <div className={"main"}>
         <section className="main-content">
@@ -310,7 +314,7 @@ const Page1 = () => {
           </div>
         </section>
       </div>
-    </div>
+    {/* </div> */}
     </Providers>
   )
 }
@@ -318,10 +322,10 @@ const Page1 = () => {
 //export default Page1
 
 
-export default function Page() {
-  return (
-    <Suspense fallback={<p>Loading...</p>}>
-      <Page1 />
-    </Suspense>
-  );
-}
+// export default function Page() {
+//   return (
+//     <Suspense fallback={<p>Loading...</p>}>
+//       <Page1 />
+//     </Suspense>
+//   );
+// }

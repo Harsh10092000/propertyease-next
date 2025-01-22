@@ -1,10 +1,12 @@
 import React from "react";
+import PropertyCard from "@/components/propertyCard/PropertyCard";
 import pool from "../libs/mysql";
 import PaginationComp from "@/components/allProperties/Pagination";
 import Providers from "../progressBarprovider";
+import SideBar from "@/components/allProperties/SideBar";
+import Sidebar2 from "@/components/allProperties/Sidebar2";
 import SearchBar from "@/components/allProperties/SearchBar";
 import MapProduct from "@/components/allProperties/MapProduct";
-import { Page1 } from "./test1";
 
 const getData = async () => {
     try {
@@ -27,12 +29,39 @@ const getData = async () => {
 
 
 const AllProperties = async ({ searchParams }) => {
-
+  
+  
     const currentUser = "";
- let currentPage = searchParams["page"] || 1;
+    //const result = await getData();
+    //const records = result.row;
+
+
+    let currentPage = searchParams["page"] || 1;
   const res = await getData(currentPage);
+  // console.log(res);
+  
+
+  //const records1 = records.slice(0, 2)
+   // console.log("record : " , records);
+    //const currentPageNo = 1;
+  //   const currentPage = 1;
+  //   const recordsPerPage = 10;
+  // const lastIndex = currentPage * recordsPerPage;
+  // let firstIndex = lastIndex - recordsPerPage;
+
+  // const records = records1?.slice(firstIndex, lastIndex);
+  // const nPages = Math.ceil(records1?.length / recordsPerPage);
+
   const data = res.row;
 
+  const sort_by = searchParams["sortby"] || "Recent Listed";
+  if (sort_by === 'Recent-Listed') {
+    currentPage = 1;
+    data.sort((a, b) => b.pro_id - a.pro_id);
+  } else if (sort_by === 'Most-Popular') {
+    currentPage = 1;
+    data.sort((a, b) => b.pro_views - a.pro_views);
+  }
 
 
   const recordsPerPage = 12;
@@ -40,7 +69,7 @@ const AllProperties = async ({ searchParams }) => {
   
   const firstIndex = (currentPage - 1) * recordsPerPage;
   const lastIndex = currentPage * recordsPerPage;
-
+  const records = res.row.slice(firstIndex, lastIndex); 
 
 
 
@@ -65,8 +94,37 @@ const AllProperties = async ({ searchParams }) => {
     ))}
     
 </div>
-<Page1 data={data} currentUser={currentUser} recordsPerPage={recordsPerPage} currentPage={currentPage} />
-     
+      <div className={"main"}>
+        <section className="main-content">
+          <div className="container">
+            <div className="title">
+              <h2>
+                All Properties
+                {/* <span className="ml-2 numberProperties">{records.length}</span> */}
+              </h2>
+            </div>
+<SearchBar data={data}/>
+            <div className="row">
+              <div className="col-md-9">
+                <MapProduct data={data} currentUser={currentUser} recordsPerPage={recordsPerPage} currentPage={currentPage} />
+                  
+              </div>
+              <div className="col-md-3 d-flex flex-column gap-3">
+                    {/* <SideBar /> */}
+                   
+                  </div>
+              
+            </div>
+            {currentPage > 1 &&
+            <a href={`/allproperties?page=${parseInt(currentPage) - 1}`}>Prev</a>
+}
+            <PaginationComp Pages={nPages} currentPage={currentPage} />
+            {currentPage < 16 &&
+            <a href={`/allproperties?page=${parseInt(currentPage) + 1}`}>Next</a>
+}
+          </div>
+        </section>
+      </div>
     </div>
     </Providers>
   );
