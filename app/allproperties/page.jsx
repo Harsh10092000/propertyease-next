@@ -1,177 +1,61 @@
-"use client"
+import React from "react";
+import PropertyCard from "@/components/propertyCard/PropertyCard";
+import pool from "../libs/mysql";
+import PaginationComp from "@/components/allProperties/Pagination";
+import Providers from "../progressBarprovider";
+import SideBar from "@/components/allProperties/SideBar";
+import Sidebar2 from "@/components/allProperties/Sidebar2";
+import SearchBar from "@/components/allProperties/SearchBar";
 
+const getData = async () => {
+    try {
+      
+      const db = await pool;
+      const q =
+        `SELECT DISTINCT property_module_images.* ,property_module.* ,agent_data.agent_type as user_type, agent_data.agent_name , agent_data.agent_sub_district, agent_data.agent_city, agent_data.agent_state FROM property_module left join property_module_images on 
+    property_module.pro_id = property_module_images.img_cnct_id left join (SELECT agent_type,user_cnct_id,agent_name ,agent_sub_district, agent_city, agent_state FROM agent_module) as agent_data on 
+    property_module.pro_user_id = agent_data.user_cnct_id where pro_listed = 1 group by pro_id ORDER BY pro_id DESC`;
+      const q1 = "SELECT COUNT(*) as total from property_module where pro_listed = 1";
+      const [rows] = await db.query(q);
+      const [total] = await db.query(q1);
 
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-import PropertyCard from '@/components/propertyCard/PropertyCard'
-import Providers from '../progressBarprovider'
-import SearchBar from '@/components/allProperties/SearchBar'
-import PaginationComp from '@/components/allProperties/Pagination'
-import { useSearchParams } from 'next/navigation'
+      return { row: rows, total: total };
+    } catch (err) {
+      
+      return err;
+    }
+  };
 
-
-import React, { Suspense } from "react";
-
-
-
-const Page1 = () => {
-
-  const searchParams = useSearchParams();
-  const a = searchParams.get("page");
-  console.log("a : " , a);
+const AllProperties = async ({ searchParams }) => {
   
-    const [data , setData] = useState([]);
-    const [openSortByOptions, setOpenSortByOptions] = useState(false);
-      const [sortBy, setSortBy] = useState("Recent Listed");
-      //const [searchParams, setSearchParams] = useSearchParams();
-      const [searchValue1, setSearchValue1] = useState("");
-      const [openPropertyAdTypeOptions, setOpenPropertyAdTypeOptions] = useState(false);
-      const [change, setChange] = useState(1);
-      const [searchValue, setSearchValue] = useState("");
-      const [suggestions, setSuggestions] = useState();
-      const [openSuggestions, setOpenSuggestions] = useState(false);
-      const [sortedUsers, setSortedUsers] = useState([]);
-    //const [nPages , setNPages] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    const [results, setResults] = useState("");
-    useEffect(() => {
-        axios
-          .get(process.env.webURL + "/api/pro/fetchPropertyData")
-          .then((res) => {
-            setData(res.data);
-            setResults(res.data);
-          });
-        }, []);
-        
-
-    useEffect(() => {
-      // setCurrentPage(searchParams["page"] || 1);
-     // const {page} = useParams();
-
-     const {page} = searchParams;
-     console.log("page : " , page);
-      //setCurrentPage(searchParams.get("page") || 1);
-      
-      const ab = searchParams.get("page");
-      setCurrentPage(ab || 1)
-    }, [searchParams]);    
-
-        const currentUser = "";
-        //const result = await getData();
-        //const records = result.row;
-    
-    
-        //const currentPage = searchParams["page"] || 1;
-
-      //const recordsPerPage = 12;
-
-    //   useEffect(() => {
-    //     setNPages( Math.ceil(data.length/ recordsPerPage));
-    //     setCurrentPage( searchParams["page"] || 1);
-    //   }, [data])
-
-     
-      const recordsPerPage = 12;
-      const lastIndex = currentPage * recordsPerPage;
-      let firstIndex = lastIndex - recordsPerPage;
-      const records = results?.slice(firstIndex, lastIndex);
-      const nPages = Math.ceil(results?.length / recordsPerPage);
+  
+    const currentUser = "";
+    //const result = await getData();
+    //const records = result.row;
 
 
-        useEffect(() => {
-          setSortedUsers(data);
-          if (sortBy === "Recent Listed") {
-            sortedUsers.sort((a, b) => b.pro_id - a.pro_id);
-          } else if (sortBy === "Most Popular") {
-            sortedUsers.sort((a, b) => b.pro_views - a.pro_views);
-          }
-        }, [data, sortBy]);
-        
-      
-        const handleSearch = ({data}) => {
-            setOpenSuggestions(false);
-            let searchWords = searchValue?.toLowerCase().split(",");
-            setSearchValue1(searchValue);
-        
-            const filteredData = (data && data.length > 0 ? data : sortedUsers).filter(
-              (item) => {
-                const itemValues =
-                  item.pro_locality +
-                  " " +
-                  item.pro_city +
-                  " " +
-                  item.pro_sub_district +
-                  " " +
-                  item.pro_street +
-                  " " +
-                  item.pro_state;
-        
-                return searchWords.every((word) =>
-                  itemValues.toLowerCase().includes(word)
-                );
-              }
-            );
-        
-            setResults(filteredData);
-            setCurrentPage(1);
-          };
-      
-            useEffect(() => {
-              const unique1 = Array.from(
-                new Set(data?.slice(0, 60).map((item) => item.pro_city.trim()))
-              );
-              const uniqueState = Array.from(
-                new Set(data?.slice(0, 60).map((item) => item.pro_state.trim()))
-              );
-          
-              const unique2 = Array.from(
-                new Set(
-                  data
-                    ?.slice(0, 60)
-                    .map(
-                      (item) =>
-                        (item.pro_sub_district
-                          ? item.pro_sub_district.trim() + ", "
-                          : "") + item.pro_city.trim()
-                    )
-                )
-              );
-              const unique3 = Array.from(
-                new Set(
-                  data
-                    ?.slice(0, 60)
-                    .map(
-                      (item) =>
-                        (item.pro_locality ? item.pro_locality.trim() + ", " : "") +
-                        (item.pro_sub_district
-                          ? item.pro_sub_district.trim() + ", "
-                          : "") +
-                        item.pro_city.trim()
-                    )
-                )
-              );
-          
-              const arr = [
-                ...unique1,
-                ...uniqueState,
-                ...unique2,
-                ...unique3,
-                searchValue,
-              ];
-          
-              const unique4 = Array.from(
-                new Set(arr.slice(0, 200).map((item) => item.trim()))
-              );
-              const unique = unique4.filter((i) =>
-                i.toLowerCase().startsWith(searchValue.toLowerCase())
-              );
-          
-              if (searchValue === "") {
-                setOpenSuggestions(false);
-              }
-          
-              setSuggestions(unique);
-            }, [searchValue]);
+    const currentPage = searchParams["page"] || 1;
+  const res = await getData(currentPage);
+  // console.log(res);
+  const recordsPerPage = 12;
+  const nPages = Math.ceil(res.total[0].total / recordsPerPage);
+
+const data = res.row;
+
+  const firstIndex = (currentPage - 1) * recordsPerPage;
+  const lastIndex = currentPage * recordsPerPage;
+  const records = res.row.slice(firstIndex, lastIndex); 
+
+  //const records1 = records.slice(0, 2)
+    console.log("record : " , records);
+    //const currentPageNo = 1;
+  //   const currentPage = 1;
+  //   const recordsPerPage = 10;
+  // const lastIndex = currentPage * recordsPerPage;
+  // let firstIndex = lastIndex - recordsPerPage;
+
+  // const records = records1?.slice(firstIndex, lastIndex);
+  // const nPages = Math.ceil(records1?.length / recordsPerPage);
 
   return (
     <Providers>
@@ -197,88 +81,7 @@ const Page1 = () => {
                 <span className="ml-2 numberProperties">{records.length}</span>
               </h2>
             </div>
-{/* <SearchBar data={records}/> */}
-<div className="row hero-search-all-pro">
-                <div
-                  className={`col-md-3 sort-by pointer position-relative ${
-                    openPropertyAdTypeOptions ? "arrow-up" : "arrow-down"
-                  }`}
-                  onClick={() => setOpenSortByOptions(!openSortByOptions)}
-                >
-                  <div className="sort-by-value">{sortBy}</div>
-                  {openSortByOptions && (
-                    <div className="sort-by-menu">
-                      <div
-                        className={`${
-                          sortBy === "Recent Listed" ? "selected" : ""
-                        }`}
-                        onClick={() => {
-                          setSortBy("Recent Listed"),
-                            setOpenSortByOptions(false);
-                            //router.push(`/allproperties?page=Recent Listed`)
-                        }}
-                      >
-                        Recent Listed
-                      </div>
-                      <div
-                        className={`${
-                          sortBy === "Most Popular" ? "selected" : ""
-                        }`}
-                        onClick={() => {
-                          setSortBy("Most Popular"),
-                            setOpenSortByOptions(false);
-                            //router.push(`/allproperties?page=Most Popular`)
-
-                        }}
-                      >
-                        Most Popular
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="col-md-7">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Search for a property"
-                    value={searchValue}
-                    onChange={(e) => {
-                      setSearchValue(e.target.value), setOpenSuggestions(true);
-                    }}
-                  />
-
-                  {/* <div class="location-icon">
-                    <IconAdjustmentsHorizontal />
-                  </div> */}
-                  {openSuggestions && (
-                    <div className=" search-suggestions-2 pt-2 shadow pb-2">
-                      {suggestions.map((item, index) => (
-                        <div
-                        key={index}
-                          className="py-2 pl-2 suggesion-item-2 pointer"
-                          onClick={() => {
-                            setSearchValue(item), setOpenSuggestions(false);
-                          }}
-                        >
-                          {item}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <div className="col-md-2">
-                  <button
-                    type="submit"
-                    className="btn btn-primary w-100 "
-                    onClick={handleSearch}
-                  >
-                    Search
-                  </button>
-                </div>
-              </div>
-
-
+<SearchBar data={data}/>
             <div className="row">
               <div className="col-md-9">
                 {records?.length > 0 &&
@@ -312,16 +115,7 @@ const Page1 = () => {
       </div>
     </div>
     </Providers>
-  )
-}
-
-//export default Page1
-
-
-export default function Page() {
-  return (
-    <Suspense fallback={<p>Loading...</p>}>
-      <Page1 />
-    </Suspense>
   );
-}
+};
+
+export default AllProperties;
