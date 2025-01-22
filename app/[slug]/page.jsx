@@ -18,13 +18,27 @@ import { ShowPrice } from "@/components/HelperComponents";
 import DynmaicDesc from "@/components/singlePropertyDetails/DynmaicDesc";
 import StickyHeader from "@/components/singlePropertyDetails/StickyHeader";
 
+
 export async function generateMetadata({ params }, parent) {
   const { slug } = params;
   if (!slug) {
     return <div>Invalid Property ID</div>;
   }
-
   const arrproId = slug.split("-");
+  //const proId1 = arrproId[arrproId.length - 1];
+  //const { row : propertyData} = await getData(slug, proId1);
+
+  const desc = `Check out this ${
+    arrproId[0] + " " + arrproId[1] + " " + arrproId[2] + " "
+  }${arrproId[3] !== "for" ? arrproId[3] : ""}
+for ${
+  arrproId[3] === "for" ? arrproId[4] : arrproId[5]
+}. It is an ideal investment opportunity in a prime${
+    arrproId[3] !== "for"
+      ? " " + arrproId[2] + " " + arrproId[3]
+      : " " + arrproId[2] + ""
+  } area with verified property assurance.`;
+
   const capitalizedName1 = arrproId
   .slice(0, arrproId.length - 1)
   .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
@@ -32,10 +46,10 @@ export async function generateMetadata({ params }, parent) {
 
   return {
     title: capitalizedName1,
-    description: "Default description for the page.",
+    description: desc,
     openGraph: {
       title: capitalizedName1,
-      description:"Description for the Open Graph",
+      description: desc,
     },
     
   };
@@ -67,6 +81,11 @@ const getData = async (slug, proId) => {
     return err;
   }
 };
+
+
+
+
+
 
 
 
