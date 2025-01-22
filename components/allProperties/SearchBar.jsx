@@ -29,32 +29,44 @@ const SearchBar = ({ data }) => {
   }, [data, sortBy]);
   
 
-  const handleSearch = ({data}) => {
-      setOpenSuggestions(false);
-      let searchWords = searchValue?.toLowerCase().split(",");
-      setSearchValue1(searchValue);
+  // const handleSearch = ({data}) => {
+  //     setOpenSuggestions(false);
+  //     let searchWords = searchValue?.toLowerCase().split(",");
+  //     setSearchValue1(searchValue);
   
-      const filteredData = (data && data.length > 0 ? data : sortedUsers).filter(
-        (item) => {
-          const itemValues =
-            item.pro_locality +
-            " " +
-            item.pro_city +
-            " " +
-            item.pro_sub_district +
-            " " +
-            item.pro_street +
-            " " +
-            item.pro_state;
+  //     const filteredData = (data && data.length > 0 ? data : sortedUsers).filter(
+  //       (item) => {
+  //         const itemValues =
+  //           item.pro_locality +
+  //           " " +
+  //           item.pro_city +
+  //           " " +
+  //           item.pro_sub_district +
+  //           " " +
+  //           item.pro_street +
+  //           " " +
+  //           item.pro_state;
   
-          return searchWords.every((word) =>
-            itemValues.toLowerCase().includes(word)
-          );
-        }
-      );
+  //         return searchWords.every((word) =>
+  //           itemValues.toLowerCase().includes(word)
+  //         );
+  //       }
+  //     );
   
-      setResults(filteredData);
-    };
+  //     setResults(filteredData);
+  //   };
+
+
+  const handleSearch = () => {
+    // Get current query params
+    const currentQuery = new URLSearchParams(window.location.search);
+
+    // Update or add 'searchval' in the query params
+    currentQuery.set('searchval', searchValue);
+
+    // Navigate to the new URL with the updated query params
+    router.push(`${window.location.pathname}?${currentQuery.toString()}`);
+  };
 
       useEffect(() => {
         const unique1 = Array.from(
@@ -130,7 +142,7 @@ const SearchBar = ({ data }) => {
                         onClick={() => {
                           setSortBy("Recent Listed"),
                             setOpenSortByOptions(false);
-                            router.push(`/allproperties?page=Recent Listed`)
+                            router.push(`/allproperties?sortby=Recent-Listed`)
                         }}
                       >
                         Recent Listed
@@ -142,7 +154,7 @@ const SearchBar = ({ data }) => {
                         onClick={() => {
                           setSortBy("Most Popular"),
                             setOpenSortByOptions(false);
-                            router.push(`/allproperties?page=Most Popular`)
+                            router.push(`/allproperties?sortby=Most-Popular`)
 
                         }}
                       >
@@ -187,6 +199,13 @@ const SearchBar = ({ data }) => {
                     type="submit"
                     className="btn btn-primary w-100 "
                     onClick={handleSearch}
+                  //  onClick={() => {
+                  //     //router.push(...router.query `?searchval=${searchValue}`)
+                  //     router.push({
+                  //       pathname: router.pathname,
+                  //       query: searchValue,
+                  //     });
+                  // }}
                   >
                     Search
                   </button>

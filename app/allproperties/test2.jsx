@@ -6,7 +6,6 @@ import Providers from "../progressBarprovider";
 import SideBar from "@/components/allProperties/SideBar";
 import Sidebar2 from "@/components/allProperties/Sidebar2";
 import SearchBar from "@/components/allProperties/SearchBar";
-import MapProduct from "@/components/allProperties/MapProduct";
 
 const getData = async () => {
     try {
@@ -64,11 +63,11 @@ const AllProperties = async ({ searchParams }) => {
 
 
   const recordsPerPage = 12;
-//   const nPages = Math.ceil(res.total[0].total / recordsPerPage);
+  const nPages = Math.ceil(res.total[0].total / recordsPerPage);
   
-//   const firstIndex = (currentPage - 1) * recordsPerPage;
-//   const lastIndex = currentPage * recordsPerPage;
-//   const records = res.row.slice(firstIndex, lastIndex); 
+  const firstIndex = (currentPage - 1) * recordsPerPage;
+  const lastIndex = currentPage * recordsPerPage;
+  const records = res.row.slice(firstIndex, lastIndex); 
 
   return (
     <Providers>
@@ -91,13 +90,23 @@ const AllProperties = async ({ searchParams }) => {
             <div className="title">
               <h2>
                 All Properties
-                {/* <span className="ml-2 numberProperties">{records.length}</span> */}
+                <span className="ml-2 numberProperties">{records.length}</span>
               </h2>
             </div>
 <SearchBar data={data}/>
             <div className="row">
               <div className="col-md-9">
-                <MapProduct data={data} currentUser={currentUser} recordsPerPage={recordsPerPage} currentPage={currentPage} />
+                {records?.length > 0 &&
+                  records.map((object, index) => (
+                    <PropertyCard
+                    key={index}
+                      // viewerRef= {viewerRef}
+                      object={object}
+                      index={index}
+                      currentUser={currentUser}
+                      
+                    />
+                  ))}
                   
               </div>
               <div className="col-md-3 d-flex flex-column gap-3">
@@ -106,13 +115,13 @@ const AllProperties = async ({ searchParams }) => {
                   </div>
               
             </div>
-            {/* {currentPage > 1 &&
+            {currentPage > 1 &&
             <a href={`/allproperties?page=${parseInt(currentPage) - 1}`}>Prev</a>
 }
             <PaginationComp Pages={nPages} currentPage={currentPage} />
             {currentPage < 16 &&
             <a href={`/allproperties?page=${parseInt(currentPage) + 1}`}>Next</a>
-} */}
+}
           </div>
         </section>
       </div>
