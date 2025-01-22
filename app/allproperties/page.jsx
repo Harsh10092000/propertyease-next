@@ -64,11 +64,11 @@ const AllProperties = async ({ searchParams }) => {
 
 
   const recordsPerPage = 12;
-//   const nPages = Math.ceil(res.total[0].total / recordsPerPage);
+  const nPages = Math.ceil(res.total[0].total / recordsPerPage);
   
-//   const firstIndex = (currentPage - 1) * recordsPerPage;
-//   const lastIndex = currentPage * recordsPerPage;
-//   const records = res.row.slice(firstIndex, lastIndex); 
+  const firstIndex = (currentPage - 1) * recordsPerPage;
+  const lastIndex = currentPage * recordsPerPage;
+  const records = res.row.slice(firstIndex, lastIndex); 
 
   return (
     <Providers>
