@@ -1,16 +1,25 @@
 "use client"
-import { useParams } from 'next/navigation'
-import React from 'react'
+
+
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import PropertyCard from '@/components/propertyCard/PropertyCard'
 import Providers from '../progressBarprovider'
 import SearchBar from '@/components/allProperties/SearchBar'
 import PaginationComp from '@/components/allProperties/Pagination'
+import { useSearchParams } from 'next/navigation'
 
 
-const page = () => {
-  const searchParams = useParams();
+import React, { Suspense } from "react";
+
+
+
+const Page1 = () => {
+
+  const searchParams = useSearchParams();
+  const a = searchParams.get("page");
+  console.log("a : " , a);
+  
     const [data , setData] = useState([]);
     const [openSortByOptions, setOpenSortByOptions] = useState(false);
       const [sortBy, setSortBy] = useState("Recent Listed");
@@ -37,9 +46,14 @@ const page = () => {
 
     useEffect(() => {
       // setCurrentPage(searchParams["page"] || 1);
-      const {page} = useParams();
+     // const {page} = useParams();
+
+     const {page} = searchParams;
+     console.log("page : " , page);
       //setCurrentPage(searchParams.get("page") || 1);
-      setCurrentPage(page || 1)
+      
+      const ab = searchParams.get("page");
+      setCurrentPage(ab || 1)
     }, [searchParams]);    
 
         const currentUser = "";
@@ -301,4 +315,13 @@ const page = () => {
   )
 }
 
-export default page
+//export default Page1
+
+
+export default function Page() {
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+      <Page1 />
+    </Suspense>
+  );
+}
