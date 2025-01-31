@@ -168,7 +168,7 @@ const Navbar = () => {
           {showBuyOptions &&
             saleData.map((item, index) => (
               <Link
-                href={`/properties/sale/${item.pro_type
+                href={`/sale/${item.pro_type
                   .split(",")[0]
                   .replaceAll(" ", "-")
                   .toLowerCase()}`}
@@ -209,7 +209,7 @@ const Navbar = () => {
           {showRentOptions &&
             rentData.map((item, index) => (
               <Link
-                href={`/properties/rent/${item.pro_type
+                href={`/rental/${item.pro_type
                   .split(",")[0]
                   .replaceAll(" ", "-")
                   .toLowerCase()}`}
@@ -340,7 +340,7 @@ useEffect(() => {
 
                     {saleData.map((item, index) => (
                       <Link
-                      href={`/properties/sale/${item.pro_type
+                      href={`/sale/${item.pro_type
                           .split(",")[0]
                           .replaceAll(" ", "-")
                           .toLowerCase()}`}
@@ -414,7 +414,7 @@ useEffect(() => {
                     <Divider />
                     {rentData.map((item, index) => (
                       <Link
-                      href={`/properties/rent/${item.pro_type
+                      href={`/rental/${item.pro_type
                           .split(",")[0]
                           .replaceAll(" ", "-")
                           .toLowerCase()}`}

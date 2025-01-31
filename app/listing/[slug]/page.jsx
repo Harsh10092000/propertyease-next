@@ -95,34 +95,40 @@ const currentUser  = "";
 
   return (
     <div>
-     {/* <Helmet>
-  <title>Propertyease - {cat}</title>
+
+
+
+  
   {cat === "residential" ? (
+    <>
+    <title>Propertyease - Residential</title>
     <meta
       name="description"
       content="Explore residential properties for sale, from stylish apartments to spacious family homes. Whether you're a first-time buyer or looking for an investment, these properties offer comfort, modern amenities, and prime locations, ideal for individuals or families looking for a long-term home."
     />
-
+    <link defer rel="canonical" href="https://propertyease.in/listing/residential" />
+</>
   ) : cat === "commercial" ? (
+    <>
+    <title>Propertyease - Commercial</title>
     <meta
       name="description"
       content="Browse commercial properties for sale, including office spaces, retail stores, and mixed-use developments. These properties are located in high-demand business areas with strong foot traffic and offer excellent potential for businesses or investors seeking prime locations."
     />
+    <link defer rel="canonical" href="https://propertyease.in/listing/commercial" />
+    </>
   ) : cat === "land" ? (
+    <>
+    <title>Propertyease - Land</title>
     <meta
       name="description"
       content="Find available land for sale, ranging from residential plots to commercial and industrial spaces. These plots are located in growing areas with great investment potential, offering the flexibility to build your dream property or develop a new venture."
     />
+    <link defer rel="canonical" href="https://propertyease.in/listing/land" />
+    </>
   ) : ""}
 
-{cat === "residential" ? (
-<link defer rel="canonical" href="https://propertyease.in/listing/residential" />
-) : cat === "commercial" ? (
-<link defer rel="canonical" href="https://propertyease.in/listing/commercial" />
-) : cat === "land" ? (
-<link defer rel="canonical" href="https://propertyease.in/listing/land" />
-) : ""}
-</Helmet> */}
+
 
  
       {/* <div className={"main padding-top"}> */}
