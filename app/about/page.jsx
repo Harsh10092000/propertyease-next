@@ -1,5 +1,9 @@
 import React from "react";
 
+export const metadaat = {
+  title : 'Propertyease - About Us',
+  description : 'Discover who we are at Propertyease.in, a trusted real estate platform dedicated to helping you find your perfect property. Learn about our team, mission, and commitment to providing top-notch real estate services in your area.'
+}
 
 const About = () => {
   return (

@@ -4,7 +4,17 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-// import { Helmet } from "react-helmet";
+
+
+// export const metadata = {
+//   title: 'Propertyease - Kurukshetra Maps',
+//   description: 'Discover detailed maps for Kurukshetra, including popular locations like Shree Vardhman City, Kohinoor City, and various HUDA sectors. Explore maps for Sector 2, Sector 3, Sector 4, Sector 5, Sector 7, Sector 8, Sector 9, and others to find key landmarks, residential, and commercial areas across Kurukshetra.'
+// }
+
+import { generateMetadata } from "@/components/MetaData";
+
+
+
 
 const CityMaps = () => {
     //const { city } = useParams();
@@ -41,6 +51,7 @@ const CityMaps = () => {
     }, []);
     return (
       <div>
+         {generateMetadata('Home Page', 'This is the home page description.')}
         {/* <Helmet>
         <title>Propertyease - Kurukshetra Maps</title>
         <link
