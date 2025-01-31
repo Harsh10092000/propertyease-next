@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Helmet, HelmetProvider } from 'react-helmet-async'; // Use react-helmet-async
+//import { Helmet, HelmetProvider } from 'react-helmet-async'; // Use react-helmet-async
 import SideBar2 from "@/components/sidebar2/SideBar2";
+import Head from "next/head";
 
 const CityMaps = () => {
     const params = useParams();
@@ -25,9 +26,9 @@ const CityMaps = () => {
     }, [city]);
 
     return (
-        <HelmetProvider> {/* Wrap with HelmetProvider */}
+      
             <div>
-                <Helmet>
+                <Head>
                     <title>Propertyease - Kurukshetra Maps</title>
                     <link
                         rel="canonical"
@@ -35,7 +36,7 @@ const CityMaps = () => {
                     />
                     <meta name="description" content="Discover detailed maps for Kurukshetra, including popular locations like Shree Vardhman City, Kohinoor City, and various HUDA sectors. Explore maps for Sector 2, Sector 3, Sector 4, Sector 5, Sector 7, Sector 8, Sector 9, and others to find key landmarks, residential, and commercial areas across Kurukshetra." />
                     <meta name="keywords" content={`Kurukshetra map, Kurukshetra city map, Kurukshetra Sector 29, Kurukshetra Sector 30, Kurukshetra Sector 31, Kurukshetra Sector 32, Kurukshetra Sector 7, Kurukshetra Sector 2, Kurukshetra Sector 4, Kurukshetra Sector 5 , Kurukshetra Sector 3 , Kurukshetra Sector 9, Kurukshetra Sector 8, Kurukshetra Sector 2 Commercial, kurukshetra Kohinoor City, kurukshetra Shree Vardhman City, Property for sale in kurukshetra, Sale in Kurukshetra, Properties in kurukshetra, Top real estate agents near me, Commercial real estate, Residential real estate, haryana, rent house, Property, Propertyease, houses for rent, mls,real estate agent, property for sale,  for sale near me, home, realtor, houses for sale Sale, Rent, Buy, India, Best Property, Kurukshetra City Map, Tehsil Map of District Kurukshetra, Maps of Kurukshetra,  `} />
-                </Helmet>
+                </Head>
 
                 <div className="main padding-top">
                     <section className="main-content">
@@ -100,7 +101,7 @@ const CityMaps = () => {
                     </section>
                 </div>
             </div>
-        </HelmetProvider>
+     
     );
 };
 
