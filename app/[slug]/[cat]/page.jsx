@@ -17,7 +17,9 @@ const Listing = () => {
 const currentUser  = "";
  // const { cat } = useParams();
  const params = useParams();
- const cat = params.slug;
+ const cat = params.cat;
+ const slug = params.slug;
+ const filCat = cat.replaceAll("-", " ");
  console.log("params : " , params);
   //const cat = "land";
   const [currentPage, setCurrentPage] = useState(1);
@@ -45,13 +47,23 @@ const currentUser  = "";
   }, [currentPage]);
 
   useEffect(() => {
-    axios
+    console.log("slug : " , slug)
+    if(slug == "rental") {
+      axios
+      .get(process.env.webURL + `/api/pro/rentalProperty/${filCat}`)
+      .then((res) => {
+        setData(res.data);
+      });
+    } else {
+      axios
       .get(
-        process.env.webURL + `/api/pro/fetchPropertyDataByCat/${cat}`
+        process.env.webURL + `/api/pro/fetchPropertyDataByCat/${filCat}`
       )
       .then((res) => {
         setData(res.data);
       });
+    }
+    
     axios
       .get(process.env.webURL + `/api/pro/fetchPropertySubCatNo`)
       .then((res) => {
@@ -124,9 +136,8 @@ const currentUser  = "";
 ) : ""}
 </Helmet> */}
 
- 
-      {/* <div className={"main padding-top"}> */}
-      <div className={"main"}>
+ {/* <div className={"main padding-top"}> */}
+      <div className={"main "}>
         <section className="main-content">
           <div className="container">
             <div className="title">
