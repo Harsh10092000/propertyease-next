@@ -1,43 +1,49 @@
-"use client";
-import React from "react";
-import { useEffect, useState } from "react";
-import axios from "axios";
+//"use client";
+//import React from "react";
+//import { useEffect, useState } from "react";
+// import axios from "axios";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+// import { useParams } from "next/navigation";
 //import { Helmet, HelmetProvider } from 'react-helmet-async'; // Use react-helmet-async
 import SideBar2 from "@/components/sidebar2/SideBar2";
-import Head from "next/head";
+import pool from "@/app/libs/mysql";
 
-const CityMaps = () => {
-    const params = useParams();
-    const city = params.city;
-    const [data, setData] = useState([]);
-    const [subCatData, setSubCatData] = useState([]);
-    const [cityData, setCityData] = useState([]);
 
-    useEffect(() => {
-        axios
-            .get(process.env.webURL + `/api/cityMap/fetchMapData1/${city}`)
-            .then((res) => {
-                setData(res.data.data1);
-                setSubCatData(res.data.data2);
-                setCityData(res.data.data3);
-            });
-    }, [city]);
 
+const getData = async (city) => {
+  try {
+    
+    const db = await pool;
+    const q =
+      "SELECT *  FROM city_map_module where map_city = ?;";
+    const [data] = await db.query(q, city);
+
+  
+   const q1 = "SELECT distinct map_category FROM city_map_module where map_city = ?";
+   const [subCatData] = await db.query(q1, city);
+
+   const q2 = `SELECT distinct map_city FROM city_map_module`
+   const [cityData] = await db.query(q2);
+
+    return { data: data, subCatData: subCatData, cityData : cityData };
+  } catch (err) {
+    console.log("err : " , err);
+    return err;
+  }
+};
+
+export const metadata = {
+  title: "Propertyease - Kurukshetra Maps",
+  description: "Discover detailed maps for Kurukshetra, including popular locations like Shree Vardhman City, Kohinoor City, and various HUDA sectors. Explore maps for Sector 2, Sector 3, Sector 4, Sector 5, Sector 7, Sector 8, Sector 9, and others to find key landmarks, residential, and commercial areas across Kurukshetra.",
+}
+
+
+const CityMaps = async ({ params }) => {
+  const { city } = await params;
+    const { data: data, subCatData , cityData } = await getData(city);
     return (
       
             <div>
-                <Head>
-                    <title>Propertyease - Kurukshetra Maps</title>
-                    <link
-                        rel="canonical"
-                        href="https://propertyease.in/citymap/Kurukshetra"
-                    />
-                    <meta name="description" content="Discover detailed maps for Kurukshetra, including popular locations like Shree Vardhman City, Kohinoor City, and various HUDA sectors. Explore maps for Sector 2, Sector 3, Sector 4, Sector 5, Sector 7, Sector 8, Sector 9, and others to find key landmarks, residential, and commercial areas across Kurukshetra." />
-                    <meta name="keywords" content={`Kurukshetra map, Kurukshetra city map, Kurukshetra Sector 29, Kurukshetra Sector 30, Kurukshetra Sector 31, Kurukshetra Sector 32, Kurukshetra Sector 7, Kurukshetra Sector 2, Kurukshetra Sector 4, Kurukshetra Sector 5 , Kurukshetra Sector 3 , Kurukshetra Sector 9, Kurukshetra Sector 8, Kurukshetra Sector 2 Commercial, kurukshetra Kohinoor City, kurukshetra Shree Vardhman City, Property for sale in kurukshetra, Sale in Kurukshetra, Properties in kurukshetra, Top real estate agents near me, Commercial real estate, Residential real estate, haryana, rent house, Property, Propertyease, houses for rent, mls,real estate agent, property for sale,  for sale near me, home, realtor, houses for sale Sale, Rent, Buy, India, Best Property, Kurukshetra City Map, Tehsil Map of District Kurukshetra, Maps of Kurukshetra,  `} />
-                </Head>
-
                 <div className="main padding-top">
                     <section className="main-content">
                         <div className="container">
