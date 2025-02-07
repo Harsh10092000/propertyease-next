@@ -16,6 +16,8 @@ import {
 //import Footer from "../../components/footer/Footer";
 import "./contact.css";
 import { TextField } from "@mui/material";
+import Loader from "@/components/loader/Loader";
+
 
 
 const ContactUs = () => {
@@ -30,7 +32,7 @@ const ContactUs = () => {
     setLoader(true);
     try {
       await axios.post(
-        import.meta.env.VITE_BACKEND + "/api/contact/contactUsData",
+        process.env.webURL + "api/contact/contactUsData",
         data
       );
       setLoader(false);
@@ -81,6 +83,7 @@ const ContactUs = () => {
    
       {/* <Navbar /> */}
       {/* {loader ? <Loader /> : ""} */}
+      {loader ? <Loader /> : ""}
       <Snackbar
         ContentProps={{
           sx: {
@@ -361,7 +364,7 @@ export default ContactUs;
 //     setLoader(true);
 //     try {
 //       await axios.post(
-//         import.meta.env.VITE_BACKEND + "/api/contact/contactUsData",
+//         process.env.webURL + "/api/contact/contactUsData",
 //         data
 //       );
 //       setLoader(false);

@@ -63,7 +63,6 @@ const AllProperties = async ({ searchParams }) => {
     {data.map((item,index) => (
         <a key={index} href={`/${item.pro_url}`} >{item.pro_url}</a>
     ))}
-    
 </div>
 <Page1 data={data} currentUser={currentUser} recordsPerPage={recordsPerPage} currentPage={currentPage} />
      
