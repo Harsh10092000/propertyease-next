@@ -119,24 +119,41 @@
 
 "use client"; // Mark this as a Client Component
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import React from "react";
 
-const ButtonComponent = React.memo(({ option, questionId, handleSelect
-     ,isTimeUp
-     , selectedOption }) => {
-  console.log("hello"); // Now this will only log when the option changes
-  const isSelected = selectedOption === option;
-  return (
-    <button
-      onClick={() => handleSelect(questionId, option)}
-      className={`list-group-item list-group-item-action ${isSelected ? "active" : ""}`}
-      disabled={isTimeUp ? true : false}
-    >
-      {option}
-    </button>
-  );
-});
+const ButtonComponent = React.memo(
+  ({
+    option,
+    questionId,
+    handleSelect,
+    isTimeUp,
+    selectedOption,
+    correctAnswer,
+  }) => {
+    
+    console.log("hello"); // Now this will only log when the option changes
+    const isSelected = selectedOption === option;
+    const getButtonClass = () => {
+      if (isTimeUp) {
+        if (isSelected) {
+          return option === correctAnswer ? "correct-ans" : "incorrect-ans";
+        }
+        return option === correctAnswer ? "correct-ans" : "";
+      }
+      return isSelected ? "active" : "";
+    };
+    return (
+      <button
+        onClick={() => handleSelect(questionId, option)}
+        className={`list-group-item list-group-item-action ${getButtonClass()}`}
+        disabled={isTimeUp ? true : false}
+      >
+        {option}
+      </button>
+    );
+  }
+);
 
 const questions = [
   {
@@ -185,6 +202,7 @@ export default function Quiz() {
   const [timeLeft, setTimeLeft] = useState(10);
   const [answers, setAnswers] = useState({});
   const [isTimeUp, setIsTimeUp] = useState(false);
+  const memoizedQuestions = useMemo(() => questions, []);
 
   //   const timerRef = useRef(null); // Create a ref for the timer
   useEffect(() => {
@@ -195,7 +213,6 @@ export default function Quiz() {
       return () => clearInterval(timer);
     } else {
       setIsTimeUp(true);
-      
     }
     //alert("times up")
   }, [timeLeft]);
@@ -260,10 +277,10 @@ export default function Quiz() {
         </div>
       </div>
       <div className="list-group">
-        {questions.map((item, index) => (
+        {memoizedQuestions.map((item, index) => (
           <div key={index}>
             {item.question}
-            <ButtonComponent
+            {/* <ButtonComponent
               option={item.options.option1}
               questionId={index}
               handleSelect={handleSelect}
@@ -290,12 +307,22 @@ export default function Quiz() {
               handleSelect={handleSelect}
               isTimeUp={isTimeUp}
               selectedOption={answers[index]}
-            />
+            /> */}
+            {Object.values(item.options).map((option, idx) => (
+              <ButtonComponent
+                key={idx}
+                option={option}
+                questionId={index}
+                handleSelect={handleSelect}
+                isTimeUp={isTimeUp}
+                selectedOption={answers[index]}
+                correctAnswer={item.answer}
+              />
+            ))}
           </div>
         ))}
 
-        <div 
-        onClick={handleSubmit}>Submit test</div>
+        <div onClick={handleSubmit}>Submit test</div>
         <div>FinalScore - {score}</div>
       </div>
     </div>

@@ -3,6 +3,9 @@ import "./globals.css";
 import Footer from "@/components/footer/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import Providers from "./progressBarprovider";
+//import dynamic from "next/dynamic";
+//const Footer = dynamic(() => import('@/components/footer/Footer'), { ssr: false });
+//const Footer = dynamic(() => import('@/components/footer/Footer'));
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

@@ -19226,3 +19226,10 @@ input.form-control.index-search::placeholder{
 }
 
 
+.correct-ans {
+  background-color: lightgreen !important;
+}
+
+.incorrect-ans {
+  background-color: red !important;
+}

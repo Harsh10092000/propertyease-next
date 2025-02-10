@@ -1,8 +1,14 @@
 "use client"
 import React from 'react'
-import AllPropertyButton from '../propertyCard2/AllPropertyButton'
-import PropertyCard2 from '../propertyCard2/PropertyCard2'
-import RecentListHeader from '../propertyCard2/RecentListHeader'
+//import AllPropertyButton from '../propertyCard2/AllPropertyButton'
+//import PropertyCard2 from '../propertyCard2/PropertyCard2'
+//import RecentListHeader from '../propertyCard2/RecentListHeader'
+
+import dynamic from "next/dynamic";
+const AllPropertyButton = dynamic(() => import('../propertyCard2/AllPropertyButton'), { ssr: false });
+const PropertyCard2 = dynamic(() => import('../propertyCard2/PropertyCard2'), { ssr: false });
+const RecentListHeader = dynamic(() => import('../propertyCard2/RecentListHeader'), { ssr: false });
+
 import { useState } from 'react'
 const RecenetListed = ({data}) => {
     const currentUser = ""
