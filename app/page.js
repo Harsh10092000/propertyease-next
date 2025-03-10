@@ -25,6 +25,61 @@ import AboutUs from "@/components/index/AboutUs";
 import RecenetListed from "@/components/index/RecenetListed";
 import HeroSection from "@/components/index/HeroSection";
 
+export async function generateMetadata() {
+
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "RealEstateListing",
+      name: "Propertyease",
+      url: "https://propertyease.in",
+      datePosted: "2024-12-01",
+      author: {
+        "@type": "Organization",
+        name: "Propertyease",
+      },
+      image: "https://propertyease.in/images/logo.webp",
+      description:
+        "Discover your dream property at PropertyEase.in! Explore a wide range of residential and commercial listings, from luxurious homes to affordable plots. Start your journey to find the perfect property today!",
+      relatedLink: ["https://propertyease.in/allproperties"],
+      significantLink: [
+        "https://propertyease.in/allproperties",
+        "https://propertyease.in/listing/residential",
+        "https://propertyease.in/listing/commercial",
+        "https://propertyease.in/listing/land",
+        "https://propertyease.in/contactus",
+        "https://propertyease.in/DC-Rates-2024-25.pdf",
+        "https://propertyease.in/documentsneededtobuyproperty.pdf",
+        "https://propertyease.in/citymap/Kurukshetra",
+      ],
+    };
+
+
+
+  return {
+    title: "Propertyease - Buy and Sell Property",
+    description: "Discover your dream property at PropertyEase.in! Explore a wide range of residential and commercial listings, from luxurious homes to affordable plots. Start your journey to find the perfect property today!",
+    openGraph: {
+      type: 'website',  
+      url: 'https://propertyease.in/',
+      title: "Propertyease - Buy and Sell Property",
+      description: "We specialize in buying, selling, and renting properties. Find your perfect home with our expert guidance.",
+      images: [{
+        url: 'https://propertyease.in/images/default.webp',
+        width: 1200,
+        height: 630,
+        alt: 'Propertyease - Buy and Sell Property'
+      }]
+    },
+    metadataBase: new URL('https://propertyease.in'),
+    alternates: {
+      canonical: 'https://propertyease.in/'
+    },
+    other: {
+      'schema.org': JSON.stringify(schema)
+    }
+  };
+}
+
 const getData = async () => {
   try {
     const db = await pool;
