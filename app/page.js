@@ -60,7 +60,7 @@ export async function generateMetadata() {
     description: "Discover your dream property at PropertyEase.in! Explore a wide range of residential and commercial listings, from luxurious homes to affordable plots. Start your journey to find the perfect property today!",
     openGraph: {
       type: 'website',  
-      url: 'https://propertyease.in/',
+      url: 'https://propertyease.in',
       title: "Propertyease - Buy and Sell Property",
       description: "We specialize in buying, selling, and renting properties. Find your perfect home with our expert guidance.",
       images: [{
@@ -72,7 +72,7 @@ export async function generateMetadata() {
     },
     metadataBase: new URL('https://propertyease.in'),
     alternates: {
-      canonical: 'https://propertyease.in/'
+      canonical: 'https://propertyease.in'
     },
     other: {
       'schema.org': JSON.stringify(schema)
