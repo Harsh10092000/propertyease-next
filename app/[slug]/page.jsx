@@ -51,6 +51,43 @@ for ${
     .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
     .join(" ");
 
+
+    const [propertyData] = await db.query(
+      "SELECT pro_url, pro_creation_date, pro_ad_type, pro_type FROM property_module WHERE pro_id = ?",
+      proId
+    );
+    const data = propertyData[0] || {}; 
+  
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "RealEstateListing",
+      "name": capitalizedName1, 
+      "url": data.pro_url || `https://propertyease.in/${slug}`, 
+      "datePosted": data.pro_creation_date || new Date().toISOString().split('T')[0], 
+      "author": {
+        "@type": "Person",
+        "name": data.pro_ad_type || "Unknown" 
+      },
+      "description": desc,
+      "relatedLink": [
+        `https://propertyease.in/${
+          data.pro_type ? data.pro_type.split(",")[1]?.toLowerCase() : ""
+        }/${
+          data.pro_type ? data.pro_type.split(",")[0]?.replaceAll(" ", "-").toLowerCase() : ""
+        }`
+      ].filter(Boolean), 
+      "significantLink": [
+        "https://propertyease.in/allproperties",
+        "https://propertyease.in/contactus",
+        "https://propertyease.in/DC-Rates-2024-25.pdf",
+        "https://propertyease.in/documentsneededtobuyproperty.pdf",
+        "https://propertyease.in/citymap/Kurukshetra",
+        "https://propertyease.in/listing/residential",
+        "https://propertyease.in/listing/commercial",
+        "https://propertyease.in/listing/land"
+      ]
+    };
+
   return {
     title: capitalizedName1,
     description: desc,
@@ -66,6 +103,13 @@ for ${
         alt: capitalizedName1
       }]
     },
+    metadataBase: new URL('https://propertyease.in'),
+    alternates: {
+      canonical: `https://propertyease.in/${slug}`
+    },
+    other: {
+      'schema.org': JSON.stringify(schema)
+    }
   };
 }
 
