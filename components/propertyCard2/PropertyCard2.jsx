@@ -5,6 +5,7 @@ import moment from "moment";
 import { IconEye } from "@tabler/icons-react";
 //import { priceFormat } from "../helper";
 import { ShowPrice } from "../HelperComponents";
+import Image from "next/image";
 
 const PropertyCard2 = ({ item, currentUser, index, col, padding }) => {
   const formatString = (str) => str.toLowerCase().replace(/ /g, "-");
@@ -19,7 +20,7 @@ const PropertyCard2 = ({ item, currentUser, index, col, padding }) => {
             <Link href={`/${item.pro_url}`}>
               {item.img_link ? (
                 <>
-                  <img
+                  {/* <img
                      src={`${
                        process.env.webURL
                      }/propertyImages/watermark/${item.img_link}`}
@@ -29,7 +30,15 @@ const PropertyCard2 = ({ item, currentUser, index, col, padding }) => {
                     height="254px"
                     width="288px"
                     loading="lazy"
-                  />
+                  /> */}
+                  <Image
+  src={`${process.env.webURL}/propertyImages/watermark/${item.img_link}`}
+  alt={`Property at https://propertyease.in/${item.pro_url}`} // Improved alt text
+  className="rec-img"
+  height={254} // Numeric value, no "px"
+  width={288}  // Numeric value, no "px"
+  loading="lazy" // Optional, as it's default in Next.js
+/>
                   <div className="top-left-1">
                     {item.pro_views !== null &&
                       parseInt(item.pro_views) > 0 && (
