@@ -3,6 +3,7 @@ import "./globals.css";
 import Footer from "@/components/footer/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import Providers from "./progressBarprovider";
+//import { AuthContextProvider } from "./context/AuthContext";
 //import dynamic from "next/dynamic";
 //const Footer = dynamic(() => import('@/components/footer/Footer'), { ssr: false });
 //const Footer = dynamic(() => import('@/components/footer/Footer'));
@@ -25,11 +26,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        {/* <AuthContextProvider> */}
       <Providers>
         <Navbar />
         {children}
         <Footer />
       </Providers>
+      {/* </AuthContextProvider> */}
       </body>
     </html>
   );

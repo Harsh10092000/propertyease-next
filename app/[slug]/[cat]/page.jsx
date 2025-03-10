@@ -419,7 +419,7 @@ const currentUser  = "";
             </div>
             <div className="row">
               <div className="col-md-9">
-                {records.length > 0 ? (
+                {records.length > 0 && (
                   records.map((object, index) => (
                     <PropertyCard
                       // viewerRef= {viewerRef}
@@ -430,15 +430,15 @@ const currentUser  = "";
                       //DateTime={DateTime}
                     />
                   ))
-                ) : (
+               // ) : (
                 //   <NoResult
                 //     searchValue={searchValue}
                 //     userCurrLocation={userCurrLocation}
                 //     handleSearchValue={handleSearchValue}
                 //   />
-                <div>No result</div>
+                // <div>No result</div>
 
-                )}
+                 )}
               </div>
               <div className="col-md-3">
                 <div>

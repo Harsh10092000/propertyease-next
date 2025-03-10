@@ -9,7 +9,13 @@ import {
     IconBrandFacebook,
   } from "@tabler/icons-react";
 import moment from 'moment';
-const StickyHeader = ({propertyData, arrproId, slug}) => {
+import Link from 'next/link';
+
+const StickyHeader = ({propertyData, arrproId, slug, agentData, userType}) => {
+  //console.log("agentData : ", agentData);
+
+ // const formatString = (str) => str.toLowerCase().replace(/ /g, '-');
+ const formatString = (str) => (str ?? "").toLowerCase().replace(/ /g, '-');
     const currentUser = "";
     const [sticky, setSticky] = useState(false);
     const handleScroll = () => {
@@ -76,17 +82,20 @@ const StickyHeader = ({propertyData, arrproId, slug}) => {
                               {propertyData.pro_state}
                             </div>
                             <span className="right-border mx-2 mobile-hidden"></span>
+                           
+                            {console.log(userType)}
                             <div className=" pl-3 pl-md-0 pro-add listing-detail">
-                              {/* {userType === "Broker" &&
+                              {
+                               userType.length > 0 && userType.agent_type === "Broker" &&
                               propertyData.pro_user_type === "Broker" ? (
                                 <Link
-                                  to={`/agentProfile/${formatString(
-                                    agentName
+                                  href={`/agentProfile/${formatString(
+                                    agentData.agent_name
                                   )}-in-${formatString(
-                                    agentDetails.agentSubDistrict
+                                    agentData.agent_sub_district
                                   )}-${formatString(
-                                    agentDetails.agentCity
-                                  )}-${formatString(agentDetails.agentstate)}-${
+                                    agentData.agent_city
+                                  )}-${formatString(agentData.agent_state)}-${
                                     propertyData.pro_user_id
                                   }`}
                                   title="Click to View Broker Profile"
@@ -95,7 +104,7 @@ const StickyHeader = ({propertyData, arrproId, slug}) => {
                                   {currentUser &&
                                   propertyData.pro_user_id == currentUser[0].login_id
                                     ? "Me "
-                                    : agentName +
+                                    : agentData.agent_name +
                                       " (" +
                                       propertyData.pro_user_type +
                                       ")" +
@@ -107,7 +116,7 @@ const StickyHeader = ({propertyData, arrproId, slug}) => {
                                 propertyData.pro_user_id == currentUser[0].login_id
                                   ? "Me "
                                   : propertyData.pro_user_type + " ")
-                              )} */}
+                              )}
 
                               <div className="listing-detail-date">
                                 
